@@ -17,5 +17,5 @@ jobs:
     - name: Install Dependencies
       run: Rscript -e 'install.packages(c("here"))'
     - name: Run Script
-        run: Rscript -e 'source(here::here("R", "test.R"), echo = TRUE)'
+      run: Rscript -e 'source(here::here("R", "test.R"), echo = TRUE)'
     
