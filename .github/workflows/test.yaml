@@ -3,6 +3,7 @@ name: test that scheduler runs
 on:
   schedule:
     - cron: "55 6 * * *"
+    - workflow_dispatch
 
 jobs:
   build:
