@@ -22,9 +22,10 @@ jobs:
         use-public-rspm: true
 
     - name: Install Dependencies
-      run: Rscript -e 'install.packages(c("here"))'
-      run: Rscript -e 'install.packages(c("fst"))'
-      run: Rscript -e 'source(here::here("dependencies", "install_bit.data.R"), echo = TRUE)'
+      run: | 
+        Rscript -e 'install.packages(c("here"))'
+        Rscript -e 'install.packages(c("fst"))'
+        Rscript -e 'source(here::here("dependencies", "install_bit.data.R"), echo = TRUE)'
 
     - name: Run Script
       run: Rscript -e 'source(here::here("R", "fantasy_rankings.R"), echo = TRUE)'
