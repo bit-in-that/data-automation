@@ -1,4 +1,4 @@
-name: fantasy rankings
+name: fantasy rankings 90000s
 
 on: 
   workflow_dispatch:
@@ -42,7 +42,7 @@ jobs:
     - name: Run Script
       run: |
         source(here::here("R", "fantasy_rankings.R"), echo = TRUE)
-        get_ranking_data(team_ids = 1L:10000L, "_zeros")
+        get_ranking_data(team_ids = 90001L:100000L, "_nineties")
       shell: Rscript {0}
       
     - name: Commit
