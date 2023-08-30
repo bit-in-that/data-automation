@@ -1,4 +1,4 @@
-name: test R code runs
+name: fantasy rankings
 
 on: 
   workflow_dispatch:
