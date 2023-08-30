@@ -1,7 +1,7 @@
 library(bit.data)
 library(fst)
 
-team_count <- 10L # 163527L
+team_count <- 163527L # 163527L
 session_id <- "e3526fbe4f1f94016a39a5a58cba41c5f744ea59"
 team_ids <- 1L:team_count
 userids <- integer(team_count)
