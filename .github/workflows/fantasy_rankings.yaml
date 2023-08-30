@@ -40,7 +40,9 @@ jobs:
         
 
     - name: Run Script
-      run: source(here::here("R", "fantasy_rankings.R"), echo = TRUE)
+      run: |
+        source(here::here("R", "fantasy_rankings.R"), echo = TRUE)
+        get_ranking_data(team_ids = 1L:10L, "_0s")
       shell: Rscript {0}
       
     - name: Commit
