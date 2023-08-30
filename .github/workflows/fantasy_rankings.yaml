@@ -23,7 +23,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages("here", "fst", "checkmate", "httr", "jsonlite")
+      run: install.packages(c("here", "fst"))
       shell: Rscript {0}
       # uses: r-lib/actions/setup-r-dependencies@v2
       # with:
