@@ -23,9 +23,11 @@ jobs:
 
 
     - name: Install dependencies
-      uses: r-lib/actions/setup-r-dependencies@v2
-      with:
-        extra-packages: any::here, any::fst, any::checkmate, any::httr, any::jsonlite
+      run: install.packages("here", "fst", "checkmate", "httr", "jsonlite")
+      shell: Rscript {0}
+      # uses: r-lib/actions/setup-r-dependencies@v2
+      # with:
+      #   extra-packages: any::here, any::fst, any::checkmate, any::httr, any::jsonlite
         
     # - name: Install system Dependencies
     #   run: >
