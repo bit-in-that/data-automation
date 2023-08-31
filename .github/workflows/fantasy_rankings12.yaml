@@ -1,4 +1,4 @@
-name: fantasy rankings
+name: fantasy rankings 120000s
 
 on: 
   workflow_dispatch:
@@ -42,7 +42,7 @@ jobs:
     - name: Run Script
       run: |
         source(here::here("R", "fantasy_rankings.R"), echo = TRUE)
-        get_ranking_data(team_ids = 1L:10000L, "_zeros")
+        get_ranking_data(team_ids = 120001L:130000L, "_120s")
       shell: Rscript {0}
       
     - name: Commit
@@ -51,5 +51,5 @@ jobs:
         git config --global user.email 'timothy.gummer@gmail.com'
         git pull
         git add .
-        git commit -m 'ACTION: update fantasy rankings' || echo "No changes to commit"
+        git commit -m 'ACTION: update fantasy rankings (120000)' || echo "No changes to commit"
         git push || echo "No changes to commit"
