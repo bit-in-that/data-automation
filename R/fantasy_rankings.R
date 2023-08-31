@@ -1,6 +1,8 @@
 library(bit.data)
 library(fst)
 
+# 2813788
+
 get_ranking_data <- function(team_ids, data_suffix) {
   
   session_id <- "e3526fbe4f1f94016a39a5a58cba41c5f744ea59"
@@ -45,10 +47,9 @@ get_ranking_data <- function(team_ids, data_suffix) {
   # saveRDS(rankings_list, "outputs/fantasy_rankings/rankings_list.RDS")
   
   suppressWarnings( dir.create("outputs/fantasy_rankings", recursive = TRUE))
-  write_fst(ranking_data, paste0("outputs/fantasy_rankings/ranking_data", data_suffix, ".fst"))
-  # ranking_data
+  # write_fst(ranking_data, paste0("outputs/fantasy_rankings/ranking_data", data_suffix, ".fst"))
+  ranking_data
 }
 
 # 163550L
-# get_ranking_data(team_ids = 163548L:163555L, "_0s")
-
+get_ranking_data(team_ids = c(5430, 94180, 146593, 156418), "_0s")
