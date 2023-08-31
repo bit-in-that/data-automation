@@ -3,7 +3,7 @@ library(fst)
 
 # 2813788
 
-get_ranking_data <- function(team_ids, data_suffix) {
+get_ranking_data <- function(team_ids, data_suffix, save_data = TRUE) {
   
   session_id <- "e3526fbe4f1f94016a39a5a58cba41c5f744ea59"
   userids <- integer(length(team_ids))
@@ -46,10 +46,14 @@ get_ranking_data <- function(team_ids, data_suffix) {
   # saveRDS(lineups_list, "outputs/fantasy_rankings/lineups_list.RDS")
   # saveRDS(rankings_list, "outputs/fantasy_rankings/rankings_list.RDS")
   
-  suppressWarnings( dir.create("outputs/fantasy_rankings", recursive = TRUE))
-  # write_fst(ranking_data, paste0("outputs/fantasy_rankings/ranking_data", data_suffix, ".fst"))
-  ranking_data
+  if(save_data) {
+    suppressWarnings( dir.create("fantasy_rankings/data/raw/2023/batched_overall_ranks/", recursive = TRUE))
+    write_fst(ranking_data, paste0("fantasy_rankings/data/raw/2023/batched_overall_ranks/", data_suffix, ".fst"))
+    
+  } else {
+    ranking_data
+  }
 }
 
 # 163550L
-get_ranking_data(team_ids = c(5430, 94180, 146593, 156418), "_0s")
+# get_ranking_data(team_ids = c(5430, 94180, 146593, 156418), "_0s")
