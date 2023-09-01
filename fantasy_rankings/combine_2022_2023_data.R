@@ -1,4 +1,5 @@
 library(fst)
+library(arrow)
 library(dplyr)
 library(purrr)
 
@@ -27,6 +28,6 @@ top2550_rank_history_2022 |>
 
 overall_ranks_combined_2022_2023 <- inner_join(overall_ranks_2023, overall_ranks_2022_top2550, "user_id", suffix = c("_2023", "_2022"))
 
-write_fst(overall_ranks_2023, "fantasy_rankings/data/processed/overall_ranks_2023.fst") 
-write_fst(overall_ranks_2022_top2550, "fantasy_rankings/data/processed/overall_ranks_2022_top2550.fst") 
-write_fst(overall_ranks_combined_2022_2023, "fantasy_rankings/data/processed/overall_ranks_combined_2022_2023.fst") 
+write_parquet(overall_ranks_2023, "fantasy_rankings/data/processed/overall_ranks_2023.parquet") 
+write_parquet(overall_ranks_2022_top2550, "fantasy_rankings/data/processed/overall_ranks_2022_top2550.parquet") 
+write_parquet(overall_ranks_combined_2022_2023, "fantasy_rankings/data/processed/overall_ranks_combined_2022_2023.parquet") 
