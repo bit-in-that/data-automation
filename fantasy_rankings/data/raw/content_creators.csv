@@ -8,6 +8,7 @@ user_id,team_id_2023,name,team_name,organisation,known_for,individual_url,includ
 1000010,43,Warney,Warne Dawgs,The Traders,,https://twitter.com/WarnieDT,TRUE
 1100064,73,Calvin,Calvinator,The Traders,,https://twitter.com/CalvinDT,TRUE
 2,44,The Traders,The Traders,The Traders,,,FALSE
+2537626,163,Dejan,Can't go Serong,The Traders,Some guy who works behind the scenes Warney describes as a nerd,https://twitter.com/DejanKalinic,FALSE
 1111760,27417,Fantasy Freako,Fantasy Freako,Chamption Data,Fantasy Freako,https://twitter.com/FantasyFreako,TRUE
 1134396,3862,DC,DC Caterpillars,Hat Chat,,https://twitter.com/DCCaterpillars,TRUE
 1808282,361,Nathan,The Obermullets,Hat Chat,,https://twitter.com/Obermullet,TRUE
@@ -31,8 +32,8 @@ user_id,team_id_2023,name,team_name,organisation,known_for,individual_url,includ
 1557670,4039,Marcus Rose,Sportsbet Official,,"Is this actually their ""official"" page",,FALSE
 1759244,460,Jayden Popowski,JPop's Jackpots,DT Talk,,https://twitter.com/jaiden_popowski,TRUE
 1199356,5864,DT Lemon,Gorringes and Lemmens,DT Talk,,https://twitter.com/Lemon_DT,TRUE
-2238095,4096,Nug,Junktime Janitors,Breakeven Podcast,,https://twitter.com/janitorstime,TRUE
-1519911,16014,Millar,Haircut 2's NHFAHCFC-2,Breakeven Podcast,,https://twitter.com/time_millar,TRUE
+2238095,4096,Nug,Junktime Janitors,Breakeven Podcast,,https://twitter.com/janitorstime,FALSE
+1519911,16014,Millar,Haircut 2's NHFAHCFC-2,Breakeven Podcast,,https://twitter.com/time_millar,FALSE
 ,,Doe,Matt Lachlan,Breakeven Podcast,,https://twitter.com/doee48,FALSE
 1564098,369,Cara,Hot & Gawny,,AFLFantasyPerth,,FALSE
 2241906,22976,Bindy,Bindi’s Blues,,Appears on podcasts recently,https://twitter.com/DT_Bindi,FALSE
