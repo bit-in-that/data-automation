@@ -17,6 +17,20 @@ content_creators |>
 
 # "https://fantasy.afl.com.au/assets/media/avatars/afl/2673766.png?v=0"
 
-write_fst(content_creators_ranks, "fantasy_rankings/data/processed//content_creators_ranks.fst")
+write_fst(content_creators_ranks, "fantasy_rankings/data/processed/content_creators_ranks.fst")
+
+arrow::write_parquet(content_creators_ranks, "fantasy_rankings/data/processed/content_creators_ranks.parquet")
+
+arrow::read_parquet("fantasy_rankings/data/processed/content_creators_ranks.parquet") |> View()
 
 
+read_fst("https://github.com/bit-in-that/data-automation/raw/main/fantasy_rankings/data/processed/content_creators_ranks.fst") |> 
+  View()
+read_fst(url("https://raw.github.com/bit-in-that/data-automation/main/fantasy_rankings/data/processed/content_creators_ranks.fst"))
+
+readRDS(url("https://github.com/bit-in-that/data-automation/raw/main/fantasy_rankings/data/raw/2022/top2550_rank_history_2022.RDS"))
+
+
+
+x <- curl::curl("https://github.com/bit-in-that/data-automation/raw/main/fantasy_rankings/data/raw/2022/top2550_rank_history_2022.RDS")
+y <- readRDS(x)
