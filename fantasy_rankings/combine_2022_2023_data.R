@@ -31,3 +31,5 @@ overall_ranks_combined_2022_2023 <- inner_join(overall_ranks_2023, overall_ranks
 write_parquet(overall_ranks_2023, "fantasy_rankings/data/processed/overall_ranks_2023.parquet") 
 write_parquet(overall_ranks_2022_top2550, "fantasy_rankings/data/processed/overall_ranks_2022_top2550.parquet") 
 write_parquet(overall_ranks_combined_2022_2023, "fantasy_rankings/data/processed/overall_ranks_combined_2022_2023.parquet") 
+
+read_parquet("fantasy_rankings/data/processed/overall_ranks_combined_2022_2023.parquet")

@@ -16,6 +16,6 @@ content_creators |>
   left_join(overall_ranks_2022_top2550, "user_id") |> 
   left_join(overall_ranks_2023, "user_id") -> content_creators_ranks
 
-# "https://fantasy.afl.com.au/assets/media/avatars/afl/2673766.png?v=0"
+
 
 write_parquet(content_creators_ranks, "fantasy_rankings/data/processed/content_creators_ranks.parquet")
