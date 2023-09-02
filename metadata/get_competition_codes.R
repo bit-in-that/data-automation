@@ -6,7 +6,7 @@ library(arrow)
 response <- GET("https://aflapi.afl.com.au/afl/v2/competitions?pageSize=50") # doesn't provide SANFL if you don't increase the page size
 output <- content(response)
 
-competition_data <- output$competitions |> 
+competition_metadata_afl <- output$competitions |> 
   bind_rows() |> 
   mutate(
     comp_code = str_remove_all(providerId, "[^\\d]"),
@@ -19,5 +19,5 @@ competition_data <- output$competitions |>
       str_remove_all("(Toyota |NAB |Coates Talent League| Premiership)")
   )
 
-write_parquet(competition_data, "metadata/output/processed/competition_data.parquet")
+write_parquet(competition_metadata_afl, "metadata/data/processed/competition_metadata_afl.parquet")
 
