@@ -3,7 +3,7 @@ library(httr)
 library(stringr)
 library(arrow)
 
-response <- GET("https://aflapi.afl.com.au/afl/v2/competitions?pageSize=50")
+response <- GET("https://aflapi.afl.com.au/afl/v2/competitions?pageSize=50") # doesn't provide SANFL if you don't increase the page size
 output <- content(response)
 
 competition_data <- output$competitions |> 
