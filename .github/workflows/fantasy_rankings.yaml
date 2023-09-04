@@ -42,7 +42,7 @@ jobs:
     - name: Run Script
       run: |
         source("afl_fantasy/modules/get_fantasy_rankings.R", echo = TRUE)
-        get_ranking_data(team_ids = 1L:10000L, "_zeros")
+        save_ranking_data("82f7e91375964cc93197f067_1693810312")
       shell: Rscript {0}
       
     - name: Commit

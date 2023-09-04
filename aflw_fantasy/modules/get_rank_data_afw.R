@@ -5,7 +5,7 @@ library(arrow)
 source("aflw_fantasy/modules/get_squad_data_afw.R")
 
 # will need the squad data later
-get_rank_data <- function(
+get_ranking_data <- function(
     session_id,
     squad_data = get_squad_data(),
     roundId = NULL, 
@@ -43,3 +43,8 @@ get_rank_data <- function(
   
 }
 
+save_ranking_data <- function(session_id) {
+  ranking_data <- get_ranking_data(session_id)
+  
+  write_parquet(ranking_data, "aflw_fantasy/data/processed/ranking_data.parquet")
+}

@@ -4,7 +4,7 @@ library(arrow)
 
 content_creators <- data.table::fread("aflw_fantasy/data/raw/content_creators_aflw.csv") |> as_tibble()
 content_organisations <- data.table::fread("afl_fantasy/data/raw/content_organisations.csv") |> as_tibble()
-rankings_data <- read_parquet("aflw_fantasy/data/processed/rankings_data.parquet") |> 
+rankings_data <- read_parquet("aflw_fantasy/data/processed/ranking_data.parquet") |> 
   select(
     user_id = userId,
     team_name = teamName,
