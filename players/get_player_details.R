@@ -3,21 +3,21 @@ library(tidyr)
 library(fitzRoy)
 library(httr)
 library(arrow)
-library(stringr)
+library(jsonlite)
+library(purrr)
 
 competition_metadata_afl <- read_parquet("metadata/data/processed/competition_metadata_afl.parquet") |> 
   select(competition_id = id, competition_name_lookup = name_lookup)
 season_metadata_afl_extended <- read_parquet("metadata/data/processed/season_metadata_afl_extended.parquet")
 
 
-season_metadata_afl_extended |> 
-  left_join(competition_data, "competition_id") |> 
-  arrange(competition_name_lookup, year) -> season_competition_metadata
+season_competition_metadata <- season_metadata_afl_extended |> 
+  left_join(competition_metadata_afl, "competition_id") |> 
+  arrange(competition_name_lookup, year)
 
 afl_cookie <- get_afl_cookie()
 
 
-# TODO: turn the flatting into a function (and try to make it more efficient)
 # TODO: run the code using github actions
 # TODO: code for appending the existing data with this this season's data (do once a week and update) - the full thing takes too long
 
@@ -32,7 +32,7 @@ get_player_details <- function(
     playerPosition = "", #c("KEY_FORWARD","MEDIUM_DEFENDER","MEDIUM_FORWARD","MIDFIELDER","KEY_DEFENDER","RUCK","MIDFIELDER_FORWARD")
     kickingFoot = "", # c("LEFT", "RIGHT")
     statesOfOrigin = "" #c("SA","WA","VIC","NSW","NT","QLD","INT","TAS","ACT")
-) {
+    ) {
   headers <- c('x-media-mis-token' = afl_cookie)
   
   api_url <- paste0(
@@ -55,51 +55,23 @@ get_player_details <- function(
     NULL
   } else {
     content$players |> 
-      toJSON() |> 
-      fromJSON(flatten = TRUE) |> 
-      as_tibble() |> 
-      mutate(across(everything(), ~ {
-        map_chr(.x, \(y) {
-          if(length(y) == 0) {
-            out <- NA_character_
-          } else {
-            as.character(y)
-          }})
-      })
-      ) |> 
-      mutate(
-        across(
-          starts_with("(totals|averages)\\."),
-          as.numeric
-        )
-      ) |> 
-      mutate(
-        across(
-          everything(), ~{
-            .x_noNA <- .x[!is.na(.x)]
-            if(any(str_detect(.x_noNA, "[^\\d\\.\\-]"))) {
-              .x
-              
-            } else if(any(str_detect(.x_noNA, "\\."))) {
-              as.numeric(.x)
-              
-            } else {
-              as.integer(.x)
-              
-            }
-          }
-        )
-      ) 
-    
+      map(~{
+        map_if(.x, is.list, ~list(bind_cols(.x)))
+        }) |> 
+      bind_rows() |> 
+      unnest(all_of(c("playerDetails", "team", "totals", "averages")), names_sep = ".")
   }
 }
 
-player_details_all <- season_competition_metadata |> 
-  select(season_providerId = providerId, year, season_name = name, competition_name_lookup) |> 
-  mutate(
-    player_details_df = map(season_providerId, get_player_details, afl_cookie = afl_cookie)
-    ) |>  
-  unnest(player_details_df)
 
-write_parquet(player_details_all, "player_details/data/processed/player_details_all.parquet")
+system.time({ # should take about 3 minutes
+  player_details_all <- season_competition_metadata |> 
+    select(season_providerId = providerId, year, season_name = name, competition_name_lookup) |> 
+    mutate(
+      player_details_df = map(season_providerId, get_player_details, afl_cookie = afl_cookie)
+      ) |>  
+    unnest(player_details_df)
+})
+
+write_parquet(player_details_all, "players/data/raw/player_details_all.parquet")
 
