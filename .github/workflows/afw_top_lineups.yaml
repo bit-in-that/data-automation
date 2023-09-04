@@ -25,7 +25,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("here", "httr", "purrr", "dplyr", "tidyr", "arrow"))
+      run: install.packages(c("here", "httr", "purrr", "dplyr", "tidyr", "arrow", "xml2"))
       shell: Rscript {0}
 
 
