@@ -7,6 +7,7 @@ content_organisations <- data.table::fread("afl_fantasy/data/raw/content_organis
 rankings_data <- read_parquet("aflw_fantasy/data/processed/rankings_data.parquet") |> 
   select(
     user_id = userId,
+    team_name = teamName,
     overall_rank = overallRank
   )
 
