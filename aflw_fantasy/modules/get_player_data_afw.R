@@ -70,6 +70,6 @@ get_player_data <- function(by_round = FALSE) {
 save_player_selections <- function(suffix = format(Sys.time(), "%Y-%m-%d_%H-%M-%S"), player_data = get_player_data()) {
   player_data |> 
     select(id, selections) |> 
-    write_parquet(paste0("aflw_fantasy/data/raw/afw_player_selections", suffix, ".parquet")) 
+    write_parquet(paste0("aflw_fantasy/data/raw/afw_player_selections_", suffix, ".parquet")) 
   
 }
