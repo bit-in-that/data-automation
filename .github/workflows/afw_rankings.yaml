@@ -1,0 +1,45 @@
+name: AFLW Fantasy Rankings
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 10 9 *" # (midnight AEST 11 september)
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+
+
+    - name: Install dependencies
+      run: install.packages(c("here", "httr", "purrr", "dplyr", "tidyr", "arrow"))
+      shell: Rscript {0}
+
+
+    - name: Run Script
+      run: |
+        source("aflw_fantasy/modules/get_rank_data_afw.R", echo = TRUE)
+        write_parquet(rankings_data, "aflw_fantasy/data/processed/rankings_data.parquet")
+      shell: Rscript {0}
+      
+    - name: Commit
+      run: |
+        git config --global user.name 'bit in that'
+        git config --global user.email 'timothy.gummer@gmail.com'
+        git pull
+        git add .
+        git commit -m 'ACTION: update aflw ranks' || echo "No changes to commit"
+        git push || echo "No changes to commit"

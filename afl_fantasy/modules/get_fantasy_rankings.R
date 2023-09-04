@@ -43,12 +43,10 @@ get_ranking_data <- function(team_ids, data_suffix, save_data = TRUE) {
     score = scores
   )
   
-  # saveRDS(lineups_list, "outputs/fantasy_rankings/lineups_list.RDS")
-  # saveRDS(rankings_list, "outputs/fantasy_rankings/rankings_list.RDS")
   
   if(save_data) {
-    suppressWarnings( dir.create("fantasy_rankings/data/raw/2023/batched_overall_ranks/", recursive = TRUE))
-    write_fst(ranking_data, paste0("fantasy_rankings/data/raw/2023/batched_overall_ranks/", data_suffix, ".fst"))
+    suppressWarnings( dir.create("afl_fantasy/data/raw/2023/batched_overall_ranks/", recursive = TRUE))
+    write_fst(ranking_data, paste0("afl_fantasy/data/raw/2023/batched_overall_ranks/", data_suffix, ".fst"))
     
   } else {
     ranking_data

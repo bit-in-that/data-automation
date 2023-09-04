@@ -1,0 +1,16 @@
+library(dplyr)
+library(data.table)
+
+content_creators <- data.table::fread("aflw_fantasy/data/raw/content_creators_aflw.csv") |> as_tibble()
+content_organisations <- data.table::fread("afl_fantasy/data/raw/content_organisations.csv") |> as_tibble()
+rankings_data <- read_parquet("aflw_fantasy/data/processed/rankings_data.parquet") |> 
+  select(
+    user_id = userId,
+    overall_rank = overallRank
+  )
+
+
+content_creators_ranks_aflw <- content_creators |> 
+  filter(include) |>
+  left_join(content_organisations, "organisation") |> 
+  left_join(rankings_data, c("user_id"))
