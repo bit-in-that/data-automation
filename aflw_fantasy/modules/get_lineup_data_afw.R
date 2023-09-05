@@ -149,7 +149,7 @@ get_top_n_lineups <- function(n_teams, session_id, ranking_data = read_parquet("
 
 save_top_10000_lineups <- function(session_id) {
   top_10000_lineups <- get_top_n_lineups(10000, session_id)
-  write_parquet(top_10000_lineups, "aflw_fantasy/data/processed/top_10000_lineups.parquet")
+  write_parquet(top_10000_lineups, "aflw_fantasy/data/raw/top_10000_lineups.parquet")
   
   top_10000_selections <- top_10000_lineups |> 
     group_by(
