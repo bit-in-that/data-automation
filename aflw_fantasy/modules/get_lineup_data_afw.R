@@ -7,6 +7,8 @@ library(arrow)
 
 # session_id <- "ff36262fdd7c030c61ec4e85_1692610963"
 
+source("aflw_fantasy/modules/get_player_data_afw.R")
+
 get_afw_my_team_raw <- function(session_id) {
   headers = c(
     cookie = paste0("X-SID=", session_id, ";")
@@ -132,7 +134,8 @@ transform_multiple_lineups <- function(lineup_list, player_data_by_round = get_p
 }
 
 
-get_top_n_lineups <- function(n_teams, session_id, ranking_data = read_parquet("aflw_fantasy/data/processed/ranking_data.parquet")) {
+get_top_n_lineups <- function(n_teams, session_id, ranking_data = read_parquet("aflw_fantasy/data/processed/ranking_data.parquet"), 
+                              player_data_by_round = get_player_data(by_round = TRUE)) {
   ranking_data |> 
     filter(overallRank %in% seq(n_teams)) |> 
     pull(userId) |> 
@@ -141,14 +144,14 @@ get_top_n_lineups <- function(n_teams, session_id, ranking_data = read_parquet("
     list_rbind() |> 
     transform_multiple_lineups(player_data_by_round) |> 
     left_join(
-      ranking_data |> ranking_dataselect(user_id = userId, team_name = teamName, overall_rank = overallRank),
+      ranking_data |> select(user_id = userId, team_name = teamName, overall_rank = overallRank),
       by = "user_id"
     )
 }
 
 save_top_10000_lineups <- function(session_id) {
   top_10000_lineups <- get_top_n_lineups(10, session_id)
-  write_parquet(top_10000_lineups, "aflw_fantasy/data/processed/top_10000_lineups.parquet")
+  write_parquet(top_10000_lineups, "aflw_fantasy/data/raw/top_10000_lineups.parquet")
   
   top_10000_selections <- top_10000_lineups |> 
     group_by(
