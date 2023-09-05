@@ -8,7 +8,8 @@ rankings_data <- read_parquet("aflw_fantasy/data/processed/ranking_data.parquet"
   select(
     user_id = userId,
     team_name = teamName,
-    overall_rank = overallRank
+    overall_rank = overallRank,
+    total_points = totalPoints
   )
 
 
