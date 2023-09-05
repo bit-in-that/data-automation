@@ -4,6 +4,7 @@ library(dplyr)
 library(tidyr)
 library(arrow)
 
+source("aflw_fantasy/modules/get_player_data_afw.R")
 
 # session_id <- "ff36262fdd7c030c61ec4e85_1692610963"
 
