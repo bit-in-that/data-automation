@@ -1,12 +1,9 @@
-name: AFLW Fantasy Selections
+name: AFLW Fantasy Selections (round)
 
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "10 8 10 9 *" # 8:10 UTC (i.e. 5:10PM) 10/9/2023
-  # push:
-  #   branches:
-  #     - main
+    - cron: "10 8 10 9 *" # 8:10 UTC (i.e. 5:10PM) 10/9/2023 - i.e. once the last game is locked out
 
 jobs:
   build:
