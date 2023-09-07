@@ -1,12 +1,10 @@
-name: AFLW Fantasy Selections
+name: AFLW Fantasy Selections (team_announcement)
 
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "10 8 10 9 *" # 8:10 UTC (i.e. 5:10PM) 10/9/2023
-  # push:
-  #   branches:
-  #     - main
+    - cron: "28 8 * * 4" # 6:28 PM every thursday (teams are announced at ~ 6:30)
+    - cron: "35 7 * * 4" 
 
 jobs:
   build:
@@ -32,7 +30,7 @@ jobs:
     - name: Run Script
       run: |
         source("aflw_fantasy/modules/get_player_data_afw.R", echo = TRUE)
-        save_player_selections("lockout_round2")
+        save_player_selections("teams_round2")
       shell: Rscript {0}
       
     - name: Commit

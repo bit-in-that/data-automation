@@ -1,12 +1,9 @@
-name: AFLW Fantasy Rankings
+name: AFLW Fantasy Selections (round)
 
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "0 14 10 9 *" # (midnight AEST 11 september)
-  # push:
-  #   branches:
-  #     - main
+    - cron: "10 8 10 9 *" # 8:10 UTC (i.e. 5:10PM) 10/9/2023 - i.e. once the last game is locked out
 
 jobs:
   build:
@@ -25,16 +22,14 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("here", "httr", "dplyr", "arrow"))
+      run: install.packages(c("here", "httr", "purrr", "dplyr", "tidyr", "arrow"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
-        source("aflw_fantasy/modules/get_rank_data_afw.R", echo = TRUE)
-        source("aflw_fantasy/modules/get_content_creator_ranks.R", echo = TRUE)
-        save_ranking_data("82f7e91375964cc93197f067_1693810312")
-        save_content_creator_ranks()
+        source("aflw_fantasy/modules/get_player_data_afw.R", echo = TRUE)
+        save_player_selections("lockout_round2")
       shell: Rscript {0}
       
     - name: Commit
@@ -43,5 +38,5 @@ jobs:
         git config --global user.email 'timothy.gummer@gmail.com'
         git pull
         git add .
-        git commit -m 'ACTION: update aflw ranks' || echo "No changes to commit"
+        git commit -m 'ACTION: update aflw selections' || echo "No changes to commit"
         git push || echo "No changes to commit"
