@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "28 8 * * 4" # 6:28 PM every thursday (teams are announced at ~ 6:30)
+    - cron: "35 7 * * 4" 
 
 jobs:
   build:
