@@ -25,7 +25,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("here", "httr", "dplyr", "arrow"))
+      run: install.packages(c("here", "httr", "dplyr", "arrow", "data.table"))
       shell: Rscript {0}
 
 
