@@ -10,7 +10,9 @@ save_content_creator_ranks <- function() {
       user_id = userId,
       team_name = teamName,
       overall_rank = overallRank,
-      total_points = totalPoints
+      total_points = totalPoints,
+      roundRank,
+      roundPoints
     )
   
   
