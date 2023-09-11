@@ -27,9 +27,11 @@ get_player_data <- function(by_round = FALSE) {
         if(1L %in% out$round) {
           out
         } else {
-          first_round_price <- out |> filter(round == 2L) |> pull(round_price)
+          all_rounds <- out |> pull(round)
+          missing_rounds <- setdiff(1:max(all_rounds), all_rounds)
+          first_round_price <- out |> pull(round_price) |> tail(n = 1)
           bind_rows(
-            out, tibble(round = 1L, round_price = first_round_price)
+            out, tibble(round = missing_rounds, round_price = first_round_price)
           )
         }
       }),
