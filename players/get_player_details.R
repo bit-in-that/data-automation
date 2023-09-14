@@ -73,5 +73,15 @@ system.time({ # should take about 3 minutes
     unnest(player_details_df)
 })
 
+player_details_all <- read_parquet("players/data/raw/player_details_all.parquet")
+
+player_details_all |> 
+  filter(gamesPlayed != 0) |> 
+  transmute(
+    totals.fantasy_points = totals.kicks * 3 + totals.handballs * 2 + totals.marks * 3 + totals.tackles * 4 + totals.freesFor - totals.freesAgainst * 3 + totals.behinds + totals.goals * 6,
+    averages.fantasy_points = averages.kicks * 3 + averages.handballs * 2 + averages.marks * 3 + averages.tackles * 4 + averages.freesFor - averages.freesAgainst * 3 + averages.behinds + averages.goals * 6
+  ) |> View()
+
+
 write_parquet(player_details_all, "players/data/raw/player_details_all.parquet")
 

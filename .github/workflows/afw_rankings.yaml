@@ -3,7 +3,7 @@ name: AFLW Fantasy Rankings
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "0 14 10 9 *" # (midnight AEST 11 september)
+    - cron: "0 2 * * 1" # 12PM every monday
   # push:
   #   branches:
   #     - main
@@ -41,7 +41,8 @@ jobs:
       run: |
         git config --global user.name 'bit in that'
         git config --global user.email 'timothy.gummer@gmail.com'
-        git pull
         git add .
+        git pull
         git commit -m 'ACTION: update aflw ranks' || echo "No changes to commit"
-        git push || echo "No changes to commit"
+        git pull
+        git push 

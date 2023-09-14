@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "28 8 * * 4" # 6:28 PM every thursday (teams are announced at ~ 6:30)
-    - cron: "35 7 * * 4" 
 
 jobs:
   build:
@@ -30,14 +29,15 @@ jobs:
     - name: Run Script
       run: |
         source("aflw_fantasy/modules/get_player_data_afw.R", echo = TRUE)
-        save_player_selections("teams_round2")
+        save_player_selections("teams_round3")
       shell: Rscript {0}
       
     - name: Commit
       run: |
         git config --global user.name 'bit in that'
         git config --global user.email 'timothy.gummer@gmail.com'
-        git pull
         git add .
+        git pull
         git commit -m 'ACTION: update aflw selections' || echo "No changes to commit"
-        git push || echo "No changes to commit"
+        git pull
+        git push
