@@ -3,7 +3,7 @@ name: AFLW Fantasy Top Lineups
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "0 15 10 9 *" # (1AM AEST 11 september)
+    - cron: "30 2 * * 1" # 12:30PM every monday
   # push:
   #   branches:
   #     - main
@@ -39,7 +39,8 @@ jobs:
       run: |
         git config --global user.name 'bit in that'
         git config --global user.email 'timothy.gummer@gmail.com'
-        git pull
         git add .
+        git pull
         git commit -m 'ACTION: update aflw top lineups' || echo "No changes to commit"
-        git push || echo "No changes to commit"
+        git pull
+        git push
