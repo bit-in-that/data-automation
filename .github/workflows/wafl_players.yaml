@@ -26,7 +26,7 @@ jobs:
 
     - name: Run Script
       run: |
-        source("state_leagues/modules/get_wafl_data.R", echo = TRUE)
+        source("state_leagues/get_wafl_data.R", echo = TRUE)
         save_wafl_player_details()
       shell: Rscript {0}
       
