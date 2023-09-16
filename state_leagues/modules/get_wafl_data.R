@@ -2,6 +2,8 @@ library(dplyr)
 library(httr)
 library(purrr)
 library(arrow)
+library(jsonlite)
+library(tidyr)
 
 # need to create a mapping between AFL and WAFL ids
 wafl_clubs_map <- c(
@@ -24,7 +26,7 @@ wafl_clubs_map <- c(
 get_wafl_player_player_list <- function(search = NULL, club = NULL, gender = NULL, type = NULL, all = NULL, limit = 100000) {
   # gender: "male" or "female"
   
-  headers = c(
+  headers <- c(
     'authorization' = 'Bearer 773575be-2f11-4102-93e7-d3715e3e9c83'
   )
   
@@ -39,9 +41,8 @@ get_wafl_player_player_list <- function(search = NULL, club = NULL, gender = NUL
   
   response <- GET("https://api.sportix.app/v1/site/players", add_headers(headers), query = query)
   
-  output <- content(response)$data
-  
-  
+  content(response)$data
+
 }
 
 clean_wafl_player_details <- function(output_list) {
@@ -70,3 +71,42 @@ save_wafl_player_details <- function() {
   write_parquet(player_details_wafl, "state_leagues/data/raw/player_details_wafl.parquet")
   write_parquet(player_details_wafl_current, "state_leagues/data/raw/player_details_wafl_current.parquet")
 }
+
+get_wafl_player_stats <- function(wafl_player_id, type = "season", aggregate_matches = FALSE) {
+  # type can also be "Career"
+  headers <- c(
+    'authorization' = 'Bearer 773575be-2f11-4102-93e7-d3715e3e9c83'
+  )
+  
+  query <- list(
+    id = wafl_player_id,
+    type = type,
+    sum = if(aggregate_matches) "true" else "false"
+  )
+  
+  response <- GET("https://api.sportix.app/v1/site/player/statistics", add_headers(headers), query = query)
+  
+  
+  # content(response)
+  response |> 
+    content(as = "text", encoding = "UTF-8") |> 
+    fromJSON(flatten = TRUE)
+  
+}
+
+save_wafl_player_match_stats <- function() {
+  wafl_id_conversion_table <- read_parquet("state_leagues/data/processed/wafl_id_conversion_table.parquet")
+  
+  wafl_player_stats <- wafl_id_conversion_table |> 
+    mutate(
+      game_stats = map(wafl_id, get_wafl_player_stats)
+    ) |> 
+    unnest(game_stats)
+    
+  write_parquet(wafl_player_stats, "state_leagues/data/raw/wafl_player_stats.parquet")
+  
+}
+
+
+
+
