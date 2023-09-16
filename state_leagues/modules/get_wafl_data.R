@@ -3,7 +3,6 @@ library(httr)
 library(purrr)
 library(arrow)
 
-# search A-Z (will take longer) as well as searching nothing
 # need to create a mapping between AFL and WAFL ids
 wafl_clubs_map <- c(
   "Claremont" = "63236960-4bd7-11e9-b622-65dd81c7aa9d",

@@ -20,14 +20,15 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("httr", "dplyr", "arrow", "purrr"))
+      run: install.packages(c("httr", "dplyr", "arrow", "purrr", "stringr"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
-        source("state_leagues/get_wafl_data.R", echo = TRUE)
+        source("state_leagues/modules/get_wafl_data.R", echo = TRUE)
         save_wafl_player_details()
+        source("state_leagues/wafl_id_mapping.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
