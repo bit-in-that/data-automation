@@ -86,11 +86,15 @@ get_wafl_player_stats <- function(wafl_player_id, type = "season", aggregate_mat
   
   response <- GET("https://api.sportix.app/v1/site/player/statistics", add_headers(headers), query = query)
   
-  
-  # content(response)
-  response |> 
+  output <- response |> 
     content(as = "text", encoding = "UTF-8") |> 
     fromJSON(flatten = TRUE)
+  
+  if(identical(output, list())) {
+    NULL
+  } else {
+    output
+  }
   
 }
 
@@ -100,13 +104,10 @@ save_wafl_player_match_stats <- function() {
   wafl_player_stats <- wafl_id_conversion_table |> 
     mutate(
       game_stats = map(wafl_id, get_wafl_player_stats)
-    ) |> 
+    ) |>
     unnest(game_stats)
     
   write_parquet(wafl_player_stats, "state_leagues/data/raw/wafl_player_stats.parquet")
   
 }
-
-
-
 
