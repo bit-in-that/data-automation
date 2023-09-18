@@ -5,6 +5,7 @@ library(tidyr)
 library(arrow)
 
 source("aflw_fantasy/modules/get_player_data_afw.R")
+source("aflw_fantasy/modules/get_rounds_afw.R") # uses jsonlite
 
 # session_id <- "ff36262fdd7c030c61ec4e85_1692610963"
 
@@ -147,7 +148,9 @@ get_top_n_lineups <- function(n_teams, round_number, session_id, ranking_data = 
     )
 }
 
-save_top_10000_lineups <- function(session_id, round_number) {
+save_top_10000_lineups <- function(session_id) {
+  round_number <- get_current_round()
+  
   top_10000_lineups <- get_top_n_lineups(10000, round_number, session_id) 
   
   write_parquet(top_10000_lineups, "aflw_fantasy/data/raw/top_10000_lineups.parquet")
