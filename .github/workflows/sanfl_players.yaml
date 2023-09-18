@@ -1,4 +1,4 @@
-name: WAFL Player Match Stats
+name: SANFL Player Details
 
 on: 
   workflow_dispatch:
@@ -20,14 +20,14 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("httr", "dplyr", "arrow", "purrr", "jsonlite", "tidyr"))
+      run: install.packages(c("httr", "dplyr", "arrow", "purrr", "tidyr"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
-        source("state_leagues/modules/get_wafl_data.R", echo = TRUE)
-        save_wafl_player_match_stats()
+        source("state_leagues/modules/get_sanfl_data.R", echo = TRUE)
+        save_sanfl_player_details()
       shell: Rscript {0}
       
     - name: Commit
@@ -36,6 +36,6 @@ jobs:
         git config --global user.email 'timothy.gummer@gmail.com'
         git add .
         git pull
-        git commit -m 'ACTION: WAFL Player Match Stats' || echo "No changes to commit"
+        git commit -m 'ACTION: SANFL Player Details' || echo "No changes to commit"
         git pull
         git push 
