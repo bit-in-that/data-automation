@@ -127,8 +127,8 @@ transform_sanfl_player_data <- function(player_data_list, career = FALSE) {
         careerStats = careerStats[[1]] |> 
           map(~ {
             .x |>
-              map_if(is.list, list) |> 
               map_if(is.null, ~ NA_character_) |> 
+              map_if(is.list, list, .else = as.character) |> 
               (\(.x) {
                 .x$clearances <- as.character(.x$clearances)
                 .x
@@ -171,11 +171,13 @@ save_sanfl_player_stats <- function() {
   sanfl_player_stats <- player_details_sanfl |>
     filter(season_year == 2023, !is.na(playerId)) |> 
     distinct(playerId) |> 
+    # BUG TESTING CODE:
+    # filter(playerId == "1014624") |> 
     # slice_sample(n = 2) |>
-    {\(.x) {
-      print(.x$playerId)
-      .x
-    }}() |> 
+    # {\(.x) {
+    #   print(.x$playerId)
+    #   .x
+    # }}() |> 
     rename(player_id = playerId) |> 
     mutate(
       player_stats = map(player_id, get_sanfl_player_stats) |> 
