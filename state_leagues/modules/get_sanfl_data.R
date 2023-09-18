@@ -185,5 +185,13 @@ save_sanfl_player_stats <- function() {
     ) |> 
     unnest(player_stats)
   
+  numerical_vairables <- names(sanfl_player_stats)[map_lgl(sanfl_player_stats, ~ str_detect(.x, "^\\-?\\d+$") |> all(na.rm = TRUE) && all(!is.na(.x)))] |> 
+    str_subset(regex("id$", ignore_case = TRUE), negate = TRUE)
+  
+  sanfl_player_stats <- sanfl_player_stats |> 
+    mutate(
+      across(all_of(numerical_vairables), as.integer)
+    )
+  
   write_parquet(sanfl_player_stats, "state_leagues/data/raw/sanfl_player_stats.parquet")
 }

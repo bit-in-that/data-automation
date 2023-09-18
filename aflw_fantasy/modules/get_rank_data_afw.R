@@ -46,5 +46,15 @@ get_ranking_data <- function(
 save_ranking_data <- function(session_id) {
   ranking_data <- get_ranking_data(session_id)
   
+  current_round <- ranking_data |> 
+    slice(1) |> 
+    with(totalPoints/averagePoints) |> 
+    round(digits = 0) |> 
+    as.integer()
+  
+  ranking_data_previous <- get_ranking_data(session_id, roundId = current_round - 1)
+  
   write_parquet(ranking_data, "aflw_fantasy/data/processed/ranking_data.parquet")
+  write_parquet(ranking_data_previous, "aflw_fantasy/data/processed/ranking_data_previous.parquet")
+  
 }
