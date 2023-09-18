@@ -143,7 +143,7 @@ get_top_n_lineups <- function(n_teams, round_number, session_id, ranking_data = 
     list_rbind() |> 
     transform_multiple_lineups(player_data_by_round) |> 
     left_join(
-      ranking_data |> select(user_id = userId, team_name = teamName, overall_rank = overallRank),
+      ranking_data |> select(user_id = userId, overall_rank = overallRank),
       by = "user_id"
     )
 }
