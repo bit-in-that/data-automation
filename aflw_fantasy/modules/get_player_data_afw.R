@@ -1,5 +1,6 @@
 library(httr)
 library(purrr)
+library(jsonlite)
 library(dplyr)
 library(tidyr)
 library(arrow)
@@ -73,5 +74,23 @@ save_player_selections <- function(suffix = format(Sys.time(), "%Y-%m-%d_%H-%M-%
   player_data |> 
     select(id, selections) |> 
     write_parquet(paste0("aflw_fantasy/data/raw/afw_player_selections_", suffix, ".parquet")) 
+  
+}
+
+save_player_selections_teams <- function() {
+  source("aflw_fantasy/modules/get_rounds_afw.R") # uses jsonlite
+  
+  round_number <- get_current_round()
+  
+  save_player_selections(paste0("teams_round", round_number))
+  
+}
+
+save_player_selections_lockout <- function() {
+  source("aflw_fantasy/modules/get_rounds_afw.R") # uses jsonlite
+  
+  round_number <- get_current_round()
+  
+  save_player_selections(paste0("lockout_round", round_number + 1))
   
 }
