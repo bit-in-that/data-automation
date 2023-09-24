@@ -22,14 +22,14 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("here", "httr", "purrr", "dplyr", "tidyr", "arrow"))
+      run: install.packages(c("here", "httr", "purrr", "dplyr", "tidyr", "arrow", "jsonlite"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
         source("aflw_fantasy/modules/get_player_data_afw.R", echo = TRUE)
-        save_player_selections("teams_round3")
+        save_player_selections_teams()
       shell: Rscript {0}
       
     - name: Commit
