@@ -82,7 +82,7 @@ save_player_selections_teams <- function() {
   
   round_number <- get_current_round()
   
-  save_player_selections(paste0("teams_round", round_number))
+  save_player_selections(paste0("teams_round", round_number + 1))
   
 }
 
