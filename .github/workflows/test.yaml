@@ -24,6 +24,19 @@ jobs:
         install.packages("arrow")
       shell: Rscript {0}
 
+    - name: Check arrow
+      run: | 
+        library(arrow)
+        print(arrow_info())
+      shell: Rscript {0}
+
+    - name: Read a parquet file
+      run: | 
+        library(arrow)
+        x <- read_parquet("aflw_fantasy/data/raw/top_10000_lineups.parquet")
+        write_parquet(x, "aflw_fantasy/data/raw/top_10000_lineups.parquet")
+      shell: Rscript {0}
+
     # - name: Install arrow
     #   run: install.packages("arrow")
     #   shell: Rscript {0}
