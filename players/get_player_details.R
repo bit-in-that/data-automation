@@ -46,8 +46,6 @@ get_player_details <- function(
   response <- GET(url = api_url, add_headers(headers), query = query)
   content <- content(response)
   
-  print(response$status_code)
-  
   if(content$totalResults == 0L) {
     NULL
   } else {
