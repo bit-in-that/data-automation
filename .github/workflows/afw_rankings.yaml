@@ -33,7 +33,7 @@ jobs:
       run: |
         source("aflw_fantasy/modules/get_rank_data_afw.R", echo = TRUE)
         source("aflw_fantasy/modules/get_content_creator_ranks.R", echo = TRUE)
-        save_ranking_data("82f7e91375964cc93197f067_1693810312")
+        save_ranking_data("533aac36e90c0ae896cb3a89_1696920884")
         save_content_creator_ranks()
       shell: Rscript {0}
       
