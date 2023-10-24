@@ -47,8 +47,6 @@ get_match_player_stats <- function(match_id, convert_to_df = TRUE) {
 player_stats_all <- match_metadata_afl |>
   select(competition_id, season_id, round_id, match_id = providerId, year, roundNumber, status, is_final, home_team_name, away_team_name) |> 
   filter(status == "CONCLUDED") |> 
-  slice(c(1, 2447, 2448, 2710, 2709, 3165, 3166, 3462, 3463, 3574, 3575, 3778, 4282:4284, 4555, 4556, 4843, 4844, 4953, 5144)) |> 
-  slice(1:4) |> 
   mutate(
     output = map(match_id, get_match_player_stats)
   ) |> 
