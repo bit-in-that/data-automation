@@ -1,4 +1,5 @@
 library(arrow)
+library(dplyr)
 
 source("aflw_fantasy/modules/get_squad_data_afw.R")
 source("aflw_fantasy/modules/get_rank_data_afw.R")
@@ -11,6 +12,6 @@ rankings_data <- get_ranking_data(session_id, squad_data)
 
 write_parquet(ranking_data, "aflw_fantasy/data/processed/ranking_data.parquet")
 
-ranking_data <- read_parquet("aflw_fantasy/data/processed/rankings_data.parquet")
+ranking_data <- read_parquet("aflw_fantasy/data/processed/ranking_data.parquet")
 
 save_ranking_data(session_id)
