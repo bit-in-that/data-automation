@@ -2,8 +2,8 @@ name: AFLW Fantasy Selections (team_announcement)
 
 on: 
   workflow_dispatch:
-  schedule:
-    - cron: "28 8 * * 4" # 6:28 PM every thursday (teams are announced at ~ 6:30)
+  # schedule:
+  #   - cron: "28 8 * * 4" # 6:28 PM every thursday (teams are announced at ~ 6:30)
 
 jobs:
   build:
