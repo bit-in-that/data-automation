@@ -2,8 +2,8 @@ name: AFLW Fantasy Selections (round)
 
 on: 
   workflow_dispatch:
-  schedule:
-    - cron: "10 8 * * 0" # 8:10 UTC (i.e. 6:10PM) every sunday - i.e. once the last game is locked out
+  # schedule:
+  #   - cron: "10 8 * * 0" # 8:10 UTC (i.e. 6:10PM) every sunday - i.e. once the last game is locked out
 
 jobs:
   build:

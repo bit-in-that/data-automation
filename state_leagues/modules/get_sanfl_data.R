@@ -3,6 +3,8 @@ library(httr)
 library(tidyr)
 library(purrr)
 library(arrow)
+library(xml2)
+library(jsonlite)
 
 # years 2015 onwards, teamCodes in get_sanfl_ladder()$teamCode   
 # comps in sanfl, womens, reserves, u18, u16
@@ -47,6 +49,28 @@ get_sanfl_player_details <- function(teamCode, year = 2023, comp = "sanfl") {
     bind_rows()
 }
 
+
+get_sanfl_ladder_history <- function(comp, year_to = 2023) {
+  tibble(
+    comp = c("sanfl", "womens", "reserves", "u18", "u16"),
+    year_from = if_else(comp %in% c("u16", "womens"), 2017L, 2015L),
+    years = map(year_from, seq, to = year_to)
+    ) |> 
+    mutate(
+      ladder = map2(comp, years, ~{
+        .y |> 
+          map(\(year){
+            get_sanfl_ladder(year, comp = .x) |> 
+              mutate(year = year)
+            }) |> 
+          list_rbind()
+        })
+    ) |> 
+    unnest(ladder) |> 
+    relocate(year, .after = "comp") |> 
+    select(-c("year_from", "years"))
+
+}
 
 get_sanfl_player_details_comp_history <- function(comp, year_to = 2023) {
   if(comp %in% c("u16", "womens")) {
@@ -194,4 +218,79 @@ save_sanfl_player_stats <- function() {
     )
   
   write_parquet(sanfl_player_stats, "state_leagues/data/raw/sanfl_player_stats.parquet")
+}
+
+get_sanfl_theme_vars <- function() {
+  # this is a URL for random player, there is a json embeded within the site source
+  response <- GET("https://sanfl.com.au/league/clubs/glenelg/1015506")
+  
+  output <- content(response)
+  
+  xml_find_all(output, ".//script")[[2]] |> 
+    xml_text() |> 
+    str_remove("^(.|\n)*themeVars = ") |> 
+    str_remove("\\s+$") |> 
+    parse_json()
+}
+
+get_sanfl_clubs_info <- function() {
+  json_list <- get_sanfl_theme_vars()
+  json_list$clubsInfo |> 
+    bind_rows() |> 
+    rename(club_id = id, club_name = name, club_link = link) |>
+    select(-clubSite)
+}
+
+transform_sanfl_league_info <- function(leaguesInfo) {
+  leaguesInfo[["sponsor"]] <- NULL
+  
+  leaguesInfo |>
+    as_tibble() |>
+    mutate(
+      seasons = map(seasons, \(season_data) {
+        season_data[["clubs"]] <- NULL
+        season_data[["supports"]] <- NULL
+        
+        
+        season_data |>
+          as_tibble() |>
+          mutate(
+            finalsRounds = map(finalsRounds, ~{
+              if(isFALSE(.x)) {
+                tibble(name = NA, shortName = NA)
+              } else {
+                as_tibble(.x)
+              }
+              
+              })
+          ) |>
+          unnest(finalsRounds) |>
+          rename_with(~paste0("finals_", .x), ends_with("Name")) |>
+          rename_with(~paste0("season_", .x), !ends_with("Name"))
+      })
+    ) |>
+    rename_with(~ paste0("comp_", .x), !"seasons") |>
+    unnest(seasons)
+}
+
+get_sanfl_season_finals_info <- function() {
+  json_list <- get_sanfl_theme_vars()
+  
+  json_list$leaguesInfo |>
+    map(transform_sanfl_league_info) |>
+    bind_rows() |>
+    group_by(comp_id, season_key) |>
+    mutate(
+      roundNumber = as.character(seq(n()) + 100)
+    ) |>
+    ungroup()
+}
+
+save_sanfl_metadata <- function() {
+  sanfl_clubs_info <- get_sanfl_clubs_info()
+  sanfl_season_finals_info <- get_sanfl_season_finals_info()
+  
+  write_parquet(sanfl_clubs_info, "state_leagues/data/raw/sanfl_clubs_info.parquet")
+  write_parquet(sanfl_season_finals_info, "state_leagues/data/raw/sanfl_season_finals_info.parquet")
+  
 }

@@ -4,6 +4,7 @@ library(purrr)
 library(arrow)
 library(jsonlite)
 library(tidyr)
+library(xml2)
 
 # need to create a mapping between AFL and WAFL ids
 wafl_clubs_map <- c(
@@ -111,3 +112,12 @@ save_wafl_player_match_stats <- function() {
   
 }
 
+get_wafl_player_image <- function(player_slug) {
+  response <- GET(paste0("https://wafl.com.au/player/", player_slug))
+  stopifnot(response$status_code == 200L)
+  output <- content(response)
+  
+  output |> 
+    xml_find_first("//*[contains(@class, 'player-info__photo')]//img") |> 
+    xml_attr("src")
+}

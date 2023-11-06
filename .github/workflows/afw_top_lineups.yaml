@@ -2,8 +2,8 @@ name: AFLW Fantasy Top Lineups
 
 on: 
   workflow_dispatch:
-  schedule:
-    - cron: "30 2 * * 1" # 12:30PM every monday
+  # schedule:
+  #   - cron: "30 2 * * 1" # 12:30PM every monday
   # push:
   #   branches:
   #     - main
