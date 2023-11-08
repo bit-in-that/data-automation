@@ -52,11 +52,15 @@ get_u18_champs_player_stats <- function(match_url) {
     html_elements("th") |> 
     html_text()
   
-  
   results <- results_table |> 
     html_table() |> 
-    pluck(1) |> 
-    `names<-`(paste0("results_", results_table_headers))
+    pluck(1)
+  
+  results <- bind_cols(
+    results |> slice(1) |> `names<-`(paste0("home_", results_table_headers)),
+    results |> slice(2) |> `names<-`(paste0("away_", results_table_headers))
+  )
+  
   
   player_stats_tables <- match_page |> 
     html_elements(".sp-template-event-performance-values")
@@ -64,17 +68,19 @@ get_u18_champs_player_stats <- function(match_url) {
   player_stats <- player_stats_tables |> 
     html_table()
   
-  df_has_player <- map_lgl(player_stats_tables, ~ "Player" %in% names(.x))
+  df_has_players <- map_lgl(player_stats, ~ "Player" %in% names(.x))
   
-  player_stats_tables <- player_stats_tables[df_has_player]
+  player_stats <- player_stats[df_has_players]
   
-  if(length(player_stats_tables) == 0L) {
+  if(length(player_stats) == 0L) {
     return(NULL)
   }
   
   team_name <- player_stats_tables |> 
     html_elements(".sp-table-caption") |> 
     html_text()
+  
+  team_name <- team_name[df_has_players]
   
   player_url <- player_stats_tables |> 
     html_elements(".data-name a") |> 
@@ -91,8 +97,6 @@ get_u18_champs_player_stats <- function(match_url) {
   
   tibble(
     team_name,
-    home_team = team_name[1],
-    away_team = team_name[2],
     venue,
     venue_address,
     player_stats
@@ -125,9 +129,8 @@ u18_champs_matches <- paste0("https://central.rookieme.com/afl/team/", state_slu
   bind_rows() |> 
   distinct(match_url, .keep_all = TRUE)
 
-system.time({ # takes about a minute
+system.time({ # takes about a minute (and a half now with the girls stuff)
   u18_champs_player_stats_initial <- u18_champs_matches |> 
-    slice(1, 112) |> 
     mutate(
       player_stats = map(match_url, get_u18_champs_player_stats)
     )
@@ -145,6 +148,9 @@ u18_champs_player_stats_intermediate <- u18_champs_player_stats_initial |>
       venue == "Blacktown International Sportspark" ~ "Blacktown ISP",
       venue == "Swinburne Centre" ~ "Punt Road Oval",
       venue == "Brighton Holmes Arena" ~ "Brighton Homes Arena",
+      venue == "Southport" ~ "Fankhauser Reserve",
+      venue == "Trevor Barker Oval" ~ "Trevor Barker Beach Oval",
+      venue == "Metricon Stadium" ~ "Heritage Bank Stadium",
       TRUE ~ venue 
       ) |> 
       str_remove_all(" \\(.*\\)") |> 
@@ -156,11 +162,18 @@ u18_champs_player_stats_intermediate <- u18_champs_player_stats_initial |>
   ) |> 
   filter(
     (K + HB + D +  M + CP + UP + T + HO + CLR + I50 + R50 + GL) > 0
+  ) |> 
+  mutate(
+    timezone = case_when(
+      !is.na(timezone) ~ timezone,
+      str_detect(home_Team, "^South Australia") ~ "Australia/Adelaide",
+      TRUE ~ NA_character_
+      )
   )
 
 # check this is empty
+u18_champs_player_stats_intermediate |> filter(is.na(timezone)) |> View()
 u18_champs_player_stats_intermediate |> filter(is.na(timezone)) |> pull(venue) |> unique()
-
 
 u18_champs_player_stats <- u18_champs_player_stats_intermediate |> 
   distinct(Date, Time, timezone) |>
@@ -169,4 +182,5 @@ u18_champs_player_stats <- u18_champs_player_stats_intermediate |>
   ) |> 
   left_join(u18_champs_player_stats_intermediate, y = _, by = c("Date", "Time", "timezone"))
 
+write_parquet(u18_champs_matches, "state_leagues/data/raw/u18_champs_matches.parquet")
 write_parquet(u18_champs_player_stats, "state_leagues/data/raw/u18_champs_player_stats.parquet")
