@@ -1,7 +1,10 @@
 library(rvest)
 library(dplyr)
 library(stringr)
-library(tidyr)
+library(purrr)
+library(arrow)
+
+combine_data_ids <- read_parquet("players/data/raw/combine_data_ids.parquet")
 
 afl_url <- "https://www.afl.com.au/news/1030664/cal-twomeys-phantom-form-guide-top-draft-prospects-september-ranking/amp"
 sporting_news_url <- "https://www.sportingnews.com/au/afl/news/phantom-draft-2023-first-round-projection-top-20-picks/f7057d7638129eb2395ecbd8"
@@ -71,15 +74,40 @@ phantom_draft_order_abc <- abc_url |>
   str_remove("^[0-9]{1,2}\\.\\s") |> 
   str_to_upper()
 
-tibble(
+phantom_draft_rankings_initial <- tibble(
   ranking = 1L:30L,
   afl = phantom_draft_order_afl,
   sporting_news = phantom_draft_order_sporting_news,
   fox_sports = phantom_draft_order_fox_sports,
   abc = phantom_draft_order_abc
-) |>
-  pivot_longer(
-    
+)
+
+
+get_player_rankings <- function(player_name, col_name) {
+  out <- which(phantom_draft_rankings_initial[[col_name]] == player_name)
+  if(length(out) == 1L) {
+    out
+  } else {
+    NA_integer_
+  }
+}
+
+phantom_draft_rankings_intermediate <- phantom_draft_rankings_initial |> 
+  select(afl:abc) |> 
+  unlist() |> 
+  unique() |> 
+  tibble(
+    player_name_upper = _
+  ) |> 
+  mutate(
+    afl = map_int(player_name_upper, get_player_rankings, col_name = "afl"),
+    sporting_news = map_int(player_name_upper, get_player_rankings, col_name = "sporting_news"),
+    fox_sports = map_int(player_name_upper, get_player_rankings, col_name = "fox_sports"),
+    abc = map_int(player_name_upper, get_player_rankings, col_name = "abc"),
+    player_name_upper = player_name_upper |> 
+      str_replace("^OLLIE\\b", "OLIVER") |> 
+      str_replace("^WILL\\b", "WILLIAM") |> 
+      str_replace("^MITCH\\b", "MITCHELL") 
   )
 
 phantom_draft_articles <- tibble(
@@ -87,4 +115,14 @@ phantom_draft_articles <- tibble(
   article_date = as.Date(c("2023-09-12", "2023-10-30", "2023-10-16", "2023-11-05"))
 )
 
+# check if the player id gets mapped on correctly for all players:
+phantom_draft_rankings <- combine_data_ids |> 
+  transmute(
+    player_name_upper = str_to_upper(paste(NAME, SURNAME)), playerId
+  ) |> 
+  right_join(
+    phantom_draft_rankings_intermediate, by = "player_name_upper"
+  )
 
+write_parquet(phantom_draft_rankings, "state_leagues/data/raw/phantom_draft_rankings.parquet")
+write_parquet(phantom_draft_articles, "state_leagues/data/raw/phantom_draft_articles.parquet")

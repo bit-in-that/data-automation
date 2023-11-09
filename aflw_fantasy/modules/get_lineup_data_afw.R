@@ -42,7 +42,7 @@ get_afw_team_raw <- function(team_id, round, session_id) {
 
 convert_lineup_list_to_df <- function(lineup_list, is_my_lineup = FALSE, my_round = NULL) {
   if(is_my_lineup) {
-    team_name <- my_lineup_list$name
+    team_name <- lineup_list$name
     user_id <- lineup_list$userId
     team_id <- lineup_list$id
     if(is.null(my_round)) {

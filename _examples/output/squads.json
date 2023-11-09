@@ -1,0 +1,110 @@
+[
+  {
+    "id": [10],
+    "full_name": ["Adelaide Crows"],
+    "name": ["Adelaide Crows"],
+    "short_name": ["ADE"]
+  },
+  {
+    "id": [20],
+    "full_name": ["Brisbane Lions"],
+    "name": ["Brisbane Lions"],
+    "short_name": ["BRL"]
+  },
+  {
+    "id": [30],
+    "full_name": ["Carlton"],
+    "name": ["Carlton"],
+    "short_name": ["CAR"]
+  },
+  {
+    "id": [40],
+    "full_name": ["Collingwood"],
+    "name": ["Collingwood"],
+    "short_name": ["COL"]
+  },
+  {
+    "id": [50],
+    "full_name": ["Essendon"],
+    "name": ["Essendon"],
+    "short_name": ["ESS"]
+  },
+  {
+    "id": [60],
+    "full_name": ["Fremantle"],
+    "name": ["Fremantle"],
+    "short_name": ["FRE"]
+  },
+  {
+    "id": [70],
+    "full_name": ["Geelong Cats"],
+    "name": ["Geelong Cats"],
+    "short_name": ["GEE"]
+  },
+  {
+    "id": [1000],
+    "full_name": ["Gold Coast Suns"],
+    "name": ["Gold Coast Suns"],
+    "short_name": ["GCS"]
+  },
+  {
+    "id": [1010],
+    "full_name": ["GWS Giants"],
+    "name": ["GWS Giants"],
+    "short_name": ["GWS"]
+  },
+  {
+    "id": [80],
+    "full_name": ["Hawthorn"],
+    "name": ["Hawthorn"],
+    "short_name": ["HAW"]
+  },
+  {
+    "id": [90],
+    "full_name": ["Melbourne"],
+    "name": ["Melbourne"],
+    "short_name": ["MEL"]
+  },
+  {
+    "id": [100],
+    "full_name": ["North Melbourne"],
+    "name": ["North Melbourne"],
+    "short_name": ["NTH"]
+  },
+  {
+    "id": [110],
+    "full_name": ["Port Adelaide"],
+    "name": ["Port Adelaide"],
+    "short_name": ["PTA"]
+  },
+  {
+    "id": [120],
+    "full_name": ["Richmond"],
+    "name": ["Richmond"],
+    "short_name": ["RIC"]
+  },
+  {
+    "id": [130],
+    "full_name": ["St Kilda"],
+    "name": ["St Kilda"],
+    "short_name": ["STK"]
+  },
+  {
+    "id": [160],
+    "full_name": ["Sydney Swans"],
+    "name": ["Sydney Swans"],
+    "short_name": ["SYD"]
+  },
+  {
+    "id": [150],
+    "full_name": ["West Coast Eagles"],
+    "name": ["West Coast Eagles"],
+    "short_name": ["WCE"]
+  },
+  {
+    "id": [140],
+    "full_name": ["Western Bulldogs"],
+    "name": ["Western Bulldogs"],
+    "short_name": ["WBD"]
+  }
+]
