@@ -307,7 +307,7 @@ player_metadata_afl <- player_details_all |>
   ) |> 
   transmute(
     playerId, #first_name = playerDetails.givenName, surname = playerDetails.surname, 
-    date_of_birth = as.Date(playerDetails.dateOfBirth, format = "%d/%m/%Y"),
+    date_of_birth = playerDetails.dateOfBirth,
     player_height = playerDetails.heightCm, player_weight = playerDetails.weightKg, year,
     player_image = playerDetails.photoURL
   ) |> 
@@ -328,7 +328,8 @@ player_metadata_afl <- player_details_all |>
     player_height_range = if_else(player_height_max == player_height_min, as.character(player_height_max), paste(player_height_min, player_height_max, sep = "-")),
     player_weight_max = if_else(player_weight_max == 0L, NA_integer_, player_weight_max),
     player_weight_min = if_else(player_weight_min == 0L, NA_integer_, player_weight_min),
-    player_weight_range = if_else(player_weight_max == player_weight_min, as.character(player_weight_max), paste(player_weight_min, player_weight_max, sep = "-"))
+    player_weight_range = if_else(player_weight_max == player_weight_min, as.character(player_weight_max), paste(player_weight_min, player_weight_max, sep = "-")),
+    date_of_birth = as.Date(date_of_birth, format = "%d/%m/%Y")
   )
 
 player_metadata_sanfl <- sanfl_player_stats |> 
