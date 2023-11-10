@@ -287,6 +287,8 @@ combine_player_seasons <- combine_player_stats |>
   ) |> 
   summarise(
     games_played = n(),
+    fantasy_ceiling = max(fantasy_points),
+    fantasy_floor = min(fantasy_points),
     across(fantasy_points:frees_against, mean),
     .groups = "drop"
   ) |> 
@@ -391,7 +393,28 @@ combine_player_details <- combine_players_both |>
     player_images = reduce(player_images, c) |> list(),
     player_image = head(player_image, n = 1),
     .groups = "drop"
-  )
+  ) |> 
+  mutate(
+    season_stats = map(playerIds, ~{
+      combine_player_seasons |> 
+        filter(playerId %in% .x) |> 
+        group_by(tier_short) |>
+        summarise(
+          fantasy_points = sum(games_played * fantasy_points) / sum(games_played),
+          games_played = sum(games_played),
+          .groups = "drop"
+        ) |> 
+        pivot_wider(names_from = tier_short, values_from = c("fantasy_points", "games_played")
+        )
+      
+    })
+  ) |> 
+  unnest(season_stats) |> 
+  relocate(c("games_played_state_underage", "fantasy_points_state_underage", "games_played_interstate_underage", "fantasy_points_interstate_underage",
+             "games_played_state_reserves", "fantasy_points_state_reserves", "games_played_state_league", "fantasy_points_state_league"), 
+           .after = "player_image")
+
+
 
 write_parquet(combine_player_details, "players/data/processed/combine_player_details.parquet")
 write_parquet(combine_player_seasons, "players/data/processed/combine_player_seasons.parquet")
