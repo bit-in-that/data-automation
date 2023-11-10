@@ -5,6 +5,11 @@ library(stringr)
 library(purrr)
 
 source("state_leagues/modules/get_wafl_data.R")
+na_rm <- function(x) {
+  x[!is.na(x)]
+}
+
+
 
 competition_metadata_afl <- read_parquet("metadata/data/processed/competition_metadata_afl.parquet")
 round_metadata_afl <- read_parquet("metadata/data/processed/round_metadata_afl.parquet")
@@ -356,17 +361,9 @@ combine_player_details <- combine_players_both |>
   left_join(player_metadata_u18_champs, by = c("playerId")) |> 
   mutate(
     player_url_afl = if_else(is.na(playerId), NA_character_, paste0("https://www.afl.com.au/stats/players?playerId=", playerId)),
-    player_urls = pmap(list(player_url_u18_champs, player_url_wafl, player_url_sanfl, player_url_afl), ~ {
-      output <- c(..1, ..2, ..3, ..4)
-      output <- output[!is.na(output)]
-      output
-    }),
+    player_urls = pmap(list(player_url_u18_champs, player_url_wafl, player_url_sanfl, player_url_afl), ~ na_rm(c(..1, ..2, ..3, ..4))),
     player_url = map_chr(player_urls, head, n = 1),
-    player_images = pmap(list(player_image_wafl, player_image_sanfl, player_images_afl), ~ {
-      output <- c(..1, ..2, ..3)
-      output <- output[!is.na(output)]
-      output
-    }),
+    player_images = pmap(list(player_image_wafl, player_image_sanfl, player_images_afl), ~ na_rm(c(..1, ..2, ..3))),
     player_image = map_chr(player_images, ~{
       if(length(.x) == 0L) {
         NA_character_
@@ -376,10 +373,11 @@ combine_player_details <- combine_players_both |>
     })
   ) |> 
   group_by(
-    player_first_name, player_surname, state, state_league_club, community_club,national_combine, playerId, date_of_birth,
-    player_height_min, player_height_max, player_height_range, player_weight_min, player_weight_max, player_weight_range
+    player_first_name, player_surname, state, state_league_club, community_club,national_combine,
+    date_of_birth, player_height_min, player_height_max, player_height_range, player_weight_min, player_weight_max, player_weight_range
   ) |> 
   summarise(
+    playerIds = c(playerId,  playerId_wafl, playerId_sanfl) |> na_rm() |> list(),
     player_urls = reduce(player_urls, c) |> list(),
     player_url = head(player_url, n = 1),
     player_images = reduce(player_images, c) |> list(),
@@ -390,3 +388,4 @@ combine_player_details <- combine_players_both |>
 write_parquet(combine_player_details, "players/data/processed/combine_player_details.parquet")
 write_parquet(combine_player_seasons, "players/data/processed/combine_player_seasons.parquet")
 write_parquet(combine_player_stats, "players/data/processed/combine_player_stats.parquet")
+
