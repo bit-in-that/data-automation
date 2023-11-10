@@ -193,7 +193,7 @@ save_sanfl_player_details <- function() {
 save_sanfl_player_stats <- function() {
   player_details_sanfl <- read_parquet("state_leagues/data/raw/player_details_sanfl.parquet")
   sanfl_player_stats <- player_details_sanfl |>
-    filter(season_year == 2023, !is.na(playerId)) |> 
+    filter(!is.na(playerId)) |> 
     distinct(playerId) |> 
     # BUG TESTING CODE:
     # filter(playerId == "1014624") |> 
