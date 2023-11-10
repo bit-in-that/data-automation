@@ -300,7 +300,8 @@ combine_player_seasons <- combine_player_stats |>
   )
 
 player_images_metadata <- player_stats_all |> 
-  arrange(desc(year)) |> 
+  left_join(competition_metadata_afl, by = c("competition_id" = "id")) |> 
+  arrange(desc(year), code) |> 
   filter(
     playerId %in% unique(combine_players_both$playerId)
   ) |> 
