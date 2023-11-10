@@ -4,31 +4,30 @@ library(arrow)
 library(stringr)
 library(purrr)
 
+source("state_leagues/modules/get_wafl_data.R")
 
-wafl_id_conversion_table <- read_parquet("state_leagues/data/processed/wafl_id_conversion_table.parquet")
-match_metadata_afl <- read_parquet("metadata/data/processed/match_metadata_afl.parquet")
 competition_metadata_afl <- read_parquet("metadata/data/processed/competition_metadata_afl.parquet")
-season_metadata_afl <- read_parquet("metadata/data/processed/season_metadata_afl.parquet")
-
 round_metadata_afl <- read_parquet("metadata/data/processed/round_metadata_afl.parquet")
 match_metadata_afl <- read_parquet("metadata/data/processed/match_metadata_afl.parquet")
 
-player_details_sanfl <- read_parquet("state_leagues/data/raw/player_details_sanfl.parquet")
-
 sanfl_season_finals_info <- read_parquet("state_leagues/data/raw/sanfl_season_finals_info.parquet")
+sanfl_team_map <- read_parquet("state_leagues/data/raw/sanfl_team_map.parquet")
 
+wafl_id_conversion_table <- read_parquet("state_leagues/data/processed/wafl_id_conversion_table.parquet")
 wafl_player_stats <- read_parquet("state_leagues/data/raw/wafl_player_stats.parquet")
-
 player_details_wafl <- read_parquet("state_leagues/data/raw/player_details_wafl.parquet")
 
 u18_champs_player_stats <- read_parquet("state_leagues/data/raw/u18_champs_player_stats.parquet")
 
 player_details_all <- read_parquet("players/data/raw/player_details_all.parquet")
+player_stats_all <- read_parquet("players/data/raw/player_stats_all.parquet")
 
-source("state_leagues/modules/get_wafl_data.R")
+phantom_draft_rankings <- read_parquet("state_leagues/data/raw/phantom_draft_rankings.parquet")
 
-# used:
 combine_data_ids <- read_parquet("players/data/raw/combine_data_ids.parquet")
+aflw_combine_data_ids <- read_parquet("players/data/raw/aflw_combine_data_ids.parquet")
+
+
 afl_combine_data_ids <- combine_data_ids |> 
   select(-team_name) |> 
   left_join(
@@ -42,21 +41,14 @@ afl_combine_data_ids <- combine_data_ids |>
     playerId_sanfl = if_else(str_detect(STATE, "SA"), str_remove(playerId, "^CD_I"), NA_character_)
   )
 
-aflw_combine_data_ids <- read_parquet("players/data/raw/aflw_combine_data_ids.parquet")
-player_stats_all <- read_parquet("players/data/raw/player_stats_all.parquet")
-
 
 # Prepare data for different competitions ----
 ## SANFL ----
-
-sanfl_team_map <- read_parquet("state_leagues/data/raw/sanfl_team_map.parquet")
 sanfl_player_stats <- read_parquet("state_leagues/data/raw/sanfl_player_stats.parquet") |> 
   mutate(
     venueTimezone = coalesce(venueTimezone, "Australia/Adelaide"),
     localStartTime = localStartTime |> str_remove("\\+.*$") |> str_replace("T", " ")
   )
-
-
 
 sanfl_player_time_map <- sanfl_player_stats |> 
   select(localStartTime, venueTimezone) |> 
@@ -67,11 +59,10 @@ sanfl_player_time_map <- sanfl_player_stats |>
 
 sanfl_player_stats_cut <- sanfl_player_stats |> 
   left_join(sanfl_player_time_map, by = c("localStartTime", "venueTimezone")) |>
-  left_join(sanfl_team_map, by = c("current_squadId" = "squadId"), suffix = c("", "_current")) |>
   left_join(sanfl_season_finals_info |> transmute(roundNumber, comp_key, season = as.integer(season_key), finals_shortName), 
             by = c("leagueCode" = "comp_key", "season", "roundNumber")) |> 
   transmute(
-    player_id, player_url = paste0("https://sanfl.com.au/league/clubs/", club_slug, "/", player_id), player_image = image, 
+    playerId = player_id,
     tier = case_when(
       leagueCode %in% c("sanfl", "state", "womens", "vflw") ~ "State League",
       leagueCode %in% c("reserves") ~ "State Reserves",
@@ -100,7 +91,8 @@ sanfl_player_stats_cut <- sanfl_player_stats |>
     opposition_name = if_else(is_home, awaySquadName, homeSquadName), position = NA_character_,
     fantasy_points = goals*6 + behinds + kicks*3 + handballs*2 + marks*3 + tackles*4 + hitouts + freesFor - freesAgainst*3,
     goals, behinds, kicks, handballs, disposals, marks, tackles, hitouts, frees_for = freesFor, frees_against = freesAgainst, 
-    # inside50s, rebound50s, clearances, kickins, marksContested, kickIneffective, handballsReceived
+    inside50s, rebound50s, clearances, contested_possession = NA_integer_, uncontested_possession = NA_integer_, clearances = NA_integer_,
+    contested_marks = marksContested, ineffective_kicks = kickIneffective, kickins, handballs_received = handballsReceived
   )
 
 ## VIC U18 ----
@@ -112,9 +104,8 @@ player_stats_all_cut <- player_stats_all |>
             by = c("match_id")) |> 
   left_join(round_metadata_afl |> select(round_id = id, round_abbreviation = abbreviation), 
             by = c("round_id")) |> 
-  # filter(!competition_code %in% c("WAFL", "SANFL")) |> # remove these as they come from a different data source
   transmute(
-    player_id = playerId, player_url = paste0("https://www.afl.com.au/stats/players?playerId=", playerId), player_image = photoURL,
+    playerId,
     tier = case_when(
       competition_code %in% c("AFL", "AFLW") ~ "National",
       competition_code %in% c("VFL", "VFLW", "WAFL", "SANFL") ~ "State League",
@@ -123,6 +114,8 @@ player_stats_all_cut <- player_stats_all |>
     ),
     comp_name = case_when(
       competition_code %in% c("WAFL", "SANFL") ~ paste(competition_code, "League"),
+      competition_code %in% c("U18B") ~ "Vic U18 Boys",
+      competition_code %in% c("U18G") ~ "Vic U18 Girls",
       TRUE ~ competition_code
     ),
     season = year, match_id, match_url = paste0("https://www.afl.com.au/afl/matches/", match_index),
@@ -136,11 +129,12 @@ player_stats_all_cut <- player_stats_all |>
     is_home = (team_name == home_team_name), team_name = if_else(is_home, home_team_name, away_team_name),
     opposition_name = if_else(is_home, away_team_name, home_team_name), position,
     fantasy_points = goals*6 + behinds + kicks*3 + handballs*2 + marks*3 + tackles*4 + hitouts + freesFor - freesAgainst*3,
-    goals, behinds, kicks, handballs, disposals, marks, tackles, hitouts, frees_for = freesFor, frees_against = freesAgainst
+    goals, behinds, kicks, handballs, disposals, marks, tackles, hitouts, frees_for = freesFor, frees_against = freesAgainst,
+    inside50s, rebound50s, clearances = NA_integer_, contested_possession = NA_integer_, uncontested_possession = NA_integer_, clearances = NA_integer_,
+    contested_marks = NA_integer_, ineffective_kicks = NA_integer_, kickins = NA_integer_, handballs_received = NA_integer_
   )
 
 ## WAFL ----
-
 wafl_player_stats_women_combine <- aflw_combine_data_ids |> 
   filter(STATE == "WA") |> 
   left_join(player_details_wafl |> transmute(playerId_wafl = id, wafl_url = paste0("https://wafl.com.au/player/", slug)), 
@@ -154,21 +148,10 @@ wafl_player_stats_women_combine <- aflw_combine_data_ids |>
     match.season.name > 2021, match.competition.name == "WAFLW" # there are some wafl reserves, preseason and rogers cup (all have goal stats only)
   )
 
-wafl_image_data <- afl_combine_data_ids |> 
-  bind_rows(aflw_combine_data_ids) |>
-  select(wafl_id = playerId_wafl) |> 
-  filter(!is.na(wafl_id)) |> 
-  left_join(player_details_wafl |> select(id, slug), 
-            by = c("wafl_id" = "id")) |> 
-  mutate(
-    player_image = map_chr(slug, get_wafl_player_image)
-  )
-
 wafl_player_stats_cut <- wafl_player_stats |> 
   bind_rows(wafl_player_stats_women_combine) |> 
-  left_join(wafl_image_data, by = "wafl_id") |> 
   transmute(
-    player_id = wafl_id, player_url = wafl_url, player_image,
+    playerId = wafl_id,
     tier = case_when(
       str_detect(match.competition.name, "League") | match.competition.name %in% c("WAFLW", "National", "State") ~ "State League",
       str_detect(match.competition.name, "Reserves") ~ "State Reserves",
@@ -200,89 +183,210 @@ wafl_player_stats_cut <- wafl_player_stats |>
     ),
     is_home = (club.name == match.home.name), team_name = club.name,
     opposition_name = if_else(is_home, match.away.name, match.home.name), position = NA_character_,
-    fantasy_points = goals*6 + behinds + kicks*3 + handballs*2 + marks*3 + tackles*4 + hitouts + frees_for - frees_against*3,
-    goals, behinds, kicks, handballs, disposals, marks, tackles, hitouts, frees_for, frees_against
+    fantasy_points = coalesce(goals, 0)*6 + behinds + kicks*3 + handballs*2 + marks*3 + tackles*4 + hitouts + frees_for - frees_against*3,
+    goals = coalesce(goals, 0), behinds, kicks, handballs, disposals, marks, tackles, hitouts, frees_for, frees_against,
+    inside50s = NA_integer_, rebound50s = NA_integer_, clearances = NA_integer_, contested_possession = NA_integer_, uncontested_possession = NA_integer_, clearances = NA_integer_,
+    contested_marks = NA_integer_, ineffective_kicks = NA_integer_, kickins = NA_integer_, handballs_received = NA_integer_
+  ) |> 
+  filter(
+    comp_name != "WAFL Futures"
   )
 
 ## U18 interstate championship ----
+combine_players_both <- bind_rows(
+  afl_combine_data_ids,
+  aflw_combine_data_ids
+) |> 
+  mutate(capitalised_name = paste(NAME, SURNAME) |> str_to_upper())
 
-
-u18_champs_player_stats |> 
-  distinct(Player, team_name) |> 
+u18_champs_player_stats_mapped <- u18_champs_player_stats |> 
   mutate(
-    last_name = case_when(
-      str_detect(Player, regex("\\b van \\b", ignore_case = TRUE)) ~ str_extract(Player, regex("\\b van \\b.*", ignore_case = TRUE)),
-      str_detect(Player, regex("\\b de \\b", ignore_case = TRUE)) ~ str_extract(Player, regex("\\b de \\b.*", ignore_case = TRUE)),
-      str_detect(Player, regex("\\bJr$", ignore_case = TRUE)) ~ str_extract(Player, regex(" \\S+ Jr$", ignore_case = TRUE)),
-      TRUE ~ str_extract(Player, " \\S+$")
-    ) |> 
-      str_trim(),
-    first_name = str_remove(Player, paste0(" ", last_name, "$"))
+    Player2 = Player |> 
+      str_replace("’", "'") |> 
+      str_replace("^Mitch\\b", "Mitchell") |> 
+      str_replace("^Will\\b", "William")
+      ,
+    capitalised_name = case_when(
+      Player2 == "Matt Carroll" ~ "Matthew Carroll",
+      Player2 == "Harry De Mattia" ~ "Harry DeMattia",
+      Player2 == "Mitch Edwards" ~ "Mitchell Edwards",
+      Player2 == "Ollie Murphy" ~ "Oliver Murphy",
+      Player2 == "Cam Nyko" ~ "Cameron Nyko",
+      Player2 == "William Brown" ~ "Will Brown",
+      Player2 == "Charlie Harrop" ~ "Charlton Harrop",
+      Player2 == "Gabby Eaton" ~ "Gabrielle Eaton",
+      Player2 == "Keely Fullerton" ~ "Keeley Fullerton",
+      Player2 == "T'Sharni Graham" ~ "TSharni Graham",
+      Player2 == "Asha Turner Funk" ~ "Asha Turner-Funk",
+      TRUE ~ Player2
+      ) |> 
+      str_to_upper()
   ) |> 
-  # filter(str_count(Player, "\\s") > 1) |> 
-  View()
-  
+  select(-Player2) |> 
+  left_join(
+    combine_players_both |> distinct(capitalised_name, playerId, .keep_all = TRUE),
+    by = "capitalised_name"
+  ) |> 
+  mutate(
+    playerId_combined = coalesce(playerId, playerId_wafl)
+  )
 
-
-# TODO: add the U18 champs numbers here too
-# TODO: add birth date and age as at 31 December 2023
-
-
-player_details_wafl |> 
-  head() |> 
-  pull(slug) |> 
-  map_chr(get_wafl_player_image)
-
-
-wafl_url_mapping <- player_details_wafl |> 
+u18_champs_player_stats_cut <-  u18_champs_player_stats_mapped |> 
   transmute(
-    playerId_wafl = id,
-    wafl_url = paste0("https://wafl.com.au/player/", slug)
+    playerId = playerId_combined,
+    tier = "Interstate Underage",
+    comp_name = if_else(League == "Trial Matches", "AFL U18 Championships", League),
+    season = Season, match_id = NA_character_, match_url,
+    match_time, match_type = case_when(
+      League == "Trial Matches" ~ "Special",
+      TRUE ~ "Regular"
+    ),
+    round_abbreviation = NA_character_,
+    is_home = (team_name == home_Team), team_name,
+    opposition_name = if_else(is_home, away_Team, home_Team), position = Position,
+    fantasy_points = GL*6 + 0 + K*3 + HB*2 + M*3 + `T`*4 + HO + 0 - 0*3,
+    goals = GL, behinds = NA_integer_, kicks = K, handballs = HB, disposals = D, marks = M, 
+    tackles  =`T`, hitouts = HO, frees_for = NA_integer_, frees_against = NA_integer_,
+    inside50s = I50, rebound50s = R50, clearances = CLR, contested_possession = CP, uncontested_possession = UP, clearances = NA_integer_,
+    contested_marks = NA_integer_, ineffective_kicks = NA_integer_, kickins = NA_integer_, handballs_received = NA_integer_
   )
 
 
-aflw_combine_data_ids |> 
-  left_join(wafl_url_mapping, by = "playerId_wafl")
+# Combine everything together ----
+player_stats_cut_combined <- bind_rows(
+  player_stats_all_cut,
+  wafl_player_stats_cut,
+  sanfl_player_stats_cut,
+  u18_champs_player_stats_cut
+)
 
-
-
-combine_data_ids |> 
-  select(-team_name) |> 
+combine_player_stats <- bind_rows(
+  combine_players_both |> select(-playerId_wafl, -playerId_sanfl, playerId = playerId, playerId_combined = playerId) |> filter(!is.na(playerId_combined)),
+  combine_players_both |> select(-playerId_wafl, playerId_combined = playerId_sanfl) |> filter(!is.na(playerId_combined)),
+  combine_players_both |> select(-playerId_sanfl, playerId_combined = playerId_wafl) |> filter(!is.na(playerId_combined))
+) |> 
+  select(
+    playerId = playerId_combined, player_first_name = NAME, player_surname = SURNAME#, player_state = STATE#, state_league_club = `STATE LEAGUE CLUB`, community_club = `COMMUNITY CLUB`
+  ) |>
   left_join(
-    wafl_id_conversion_table,
-    by = c("playerId" = "official_id")
+    player_stats_cut_combined,
+    by = c("playerId"),
+    relationship = "many-to-many"
+  ) |>
+  filter(!is.na(match_time)) |> 
+  distinct(player_first_name, player_surname, match_time, .keep_all = TRUE)
+
+combine_player_seasons <- combine_player_stats |> 
+  group_by(
+    playerId, player_first_name, player_surname, tier, comp_name, season
   ) |> 
-  rename(
-    playerId_wafl = wafl_id
+  summarise(
+    games_played = n(),
+    across(fantasy_points:frees_against, mean),
+    .groups = "drop"
+  )
+
+player_metadata_afl <- player_details_all |> 
+  filter(
+    playerId %in% unique(combine_players_both$playerId)
   ) |> 
+  transmute(
+    playerId, #first_name = playerDetails.givenName, surname = playerDetails.surname, 
+    date_of_birth = as.Date(playerDetails.dateOfBirth, format = "%d/%m/%Y"),
+    player_height = playerDetails.heightCm, player_weight = playerDetails.weightKg, year,
+    player_image = playerDetails.photoURL
+  ) |> 
+  arrange(desc(year)) |> 
+  group_by(playerId) |>
+  summarise(
+    # first_name = head(first_name, 1),
+    # surname = head(surname, 1),
+    date_of_birth = date_of_birth |> table() |> which.max() |> names(),
+    player_images_afl = list(unique(player_image)),
+    player_height_max = max(player_height),
+    player_height_min = min(player_height),
+    player_weight_max = max(player_weight),
+    player_weight_min = min(player_weight),
+    .groups = "drop"
+  ) |> mutate(
+    player_height_min = if_else(player_height_min == 0L, player_height_max, player_height_min),
+    player_height_range = if_else(player_height_max == player_height_min, as.character(player_height_max), paste(player_height_min, player_height_max, sep = "-")),
+    player_weight_max = if_else(player_weight_max == 0L, NA_integer_, player_weight_max),
+    player_weight_min = if_else(player_weight_min == 0L, NA_integer_, player_weight_min),
+    player_weight_range = if_else(player_weight_max == player_weight_min, as.character(player_weight_max), paste(player_weight_min, player_weight_max, sep = "-"))
+  )
+
+player_metadata_sanfl <- sanfl_player_stats |> 
+  filter(
+    player_id %in% unique(combine_players_both$playerId_sanfl)
+  ) |> 
+  left_join(sanfl_team_map, by = c("leagueCode" = "comp", "teamCode" = "teamCode"), suffix = c("", "_current")) |>
+  transmute(
+    playerId = player_id, player_url_sanfl = paste0("https://sanfl.com.au/league/clubs/", club_slug, "/", player_id), 
+    player_image_sanfl = if_else(image == "", NA_character_, image)
+  ) |> 
+  distinct(playerId, .keep_all = TRUE)
+
+system.time({
+  player_metadata_wafl <- player_details_wafl |> 
+    filter(
+      id %in% unique(combine_players_both$playerId_wafl)
+    ) |> 
+    transmute(
+      playerId = id, 
+      player_url_wafl = paste0("https://wafl.com.au/player/", slug),
+      player_image_wafl = map_chr(slug, get_wafl_player_image)
+    )
+})
+
+player_metadata_u18_champs <- u18_champs_player_stats_mapped |> 
+  filter(
+    playerId_combined %in% unique(combine_players_both$playerId),
+    !is.na(playerId_combined),
+  ) |> 
+  select(playerId = playerId_combined, player_url_u18_champs = player_url) |> 
+  distinct()
+
+combine_player_details <- combine_players_both |> 
+  rename(player_first_name = NAME, player_surname = SURNAME, state = STATE, state_league_club = `STATE LEAGUE CLUB`, community_club = `COMMUNITY CLUB`) |> 
+  select(-capitalised_name) |> 
+  left_join(player_metadata_afl, by = c("playerId")) |> 
+  left_join(player_metadata_sanfl, by = c("playerId_sanfl" = "playerId")) |> 
+  left_join(player_metadata_wafl, by = c("playerId_wafl" = "playerId")) |> 
+  left_join(player_metadata_u18_champs, by = c("playerId")) |> 
   mutate(
-    playerId_sanfl = if_else(str_detect(STATE, "SA"), str_remove(playerId, "^CD_I"), NA_character_),
-    player_stats_sanfl = map(playerId_sanfl, ~{
-      if(is.na(.x)) {
-        NULL
+    player_url_afl = if_else(is.na(playerId), NA_character_, paste0("https://www.afl.com.au/stats/players?playerId=", playerId)),
+    player_urls = pmap(list(player_url_u18_champs, player_url_wafl, player_url_sanfl, player_url_afl), ~ {
+      output <- c(..1, ..2, ..3, ..4)
+      output <- output[!is.na(output)]
+      output
+    }),
+    player_url = map_chr(player_urls, head, n = 1),
+    player_images = pmap(list(player_image_wafl, player_image_sanfl, player_images_afl), ~ {
+      output <- c(..1, ..2, ..3)
+      output <- output[!is.na(output)]
+      output
+    }),
+    player_image = map_chr(player_images, ~{
+      if(length(.x) == 0L) {
+        NA_character_
       } else {
-        sanfl_player_stats_cut |> 
-          filter(player_id == .x)        
-      }
+        head(.x, n = 1)
+      } 
     })
   ) |> 
-  # unnest(player_stats_sanfl) |> 
-  View()
-
-# clearances = totalClearances
-
-player_stats_all |> 
-  filter(status == "CONCLUDED") |> 
-  left_join(select(match_metadata_afl, match_index = id, match_id = providerId), by = "match_id") |> 
-  select(
-    playerId, givenName, surname, playerJumperNumber, team_name, match_index, year,
-    goals, behinds, disposals, kicks, handballs, marks, tackles, hitouts, freesFor, freesAgainst, dreamTeamPoints
+  group_by(
+    player_first_name, player_surname, state, state_league_club, community_club,national_combine, playerId, date_of_birth,
+    player_height_min, player_height_max, player_height_range, player_weight_min, player_weight_max, player_weight_range
   ) |> 
-  mutate(
-    fantasy_points = goals*6 + behinds + kicks*3 + handballs*2 + marks*3 + tackles*4 + hitouts + freesFor - freesAgainst*3,
-    dt_diff = fantasy_points - dreamTeamPoints
-  ) |> 
-  filter(dt_diff != 0) |> View()
+  summarise(
+    player_urls = reduce(player_urls, c) |> list(),
+    player_url = head(player_url, n = 1),
+    player_images = reduce(player_images, c) |> list(),
+    player_image = head(player_image, n = 1),
+    .groups = "drop"
+  )
 
-# TODO: get the player stats for U18
-
+write_parquet(combine_player_details, "players/data/processed/combine_player_details.parquet")
+write_parquet(combine_player_seasons, "players/data/processed/combine_player_seasons.parquet")
+write_parquet(combine_player_stats, "players/data/processed/combine_player_stats.parquet")
