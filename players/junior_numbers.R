@@ -9,8 +9,6 @@ na_rm <- function(x) {
   x[!is.na(x)]
 }
 
-
-
 competition_metadata_afl <- read_parquet("metadata/data/processed/competition_metadata_afl.parquet")
 round_metadata_afl <- read_parquet("metadata/data/processed/round_metadata_afl.parquet")
 match_metadata_afl <- read_parquet("metadata/data/processed/match_metadata_afl.parquet")
@@ -388,6 +386,7 @@ combine_player_details <- combine_players_both |>
     date_of_birth, player_height_min, player_height_max, player_height_range, player_weight_min, player_weight_max, player_weight_range
   ) |> 
   summarise(
+    playerId = head(playerId, 1),
     playerIds = c(playerId,  playerId_wafl, playerId_sanfl) |> na_rm() |> list(),
     player_urls = reduce(player_urls, c) |> list(),
     player_url = head(player_url, n = 1),
@@ -413,9 +412,15 @@ combine_player_details <- combine_players_both |>
   unnest(season_stats) |> 
   relocate(c("games_played_state_underage", "fantasy_points_state_underage", "games_played_interstate_underage", "fantasy_points_interstate_underage",
              "games_played_state_reserves", "fantasy_points_state_reserves", "games_played_state_league", "fantasy_points_state_league"), 
-           .after = "player_image")
-
-
+           .after = "player_image") |> 
+  left_join(
+    phantom_draft_rankings |> select(-player_name_upper) |> rename_with(~paste0("phantom_draft_", .x), -all_of("playerId")), 
+    by = "playerId"
+  ) #|> 
+  # arrange(
+  #   phantom_draft_afl, phantom_draft_abc, phantom_draft_sporting_news, phantom_draft_fox_sports, 
+  # )
+  
 
 write_parquet(combine_player_details, "players/data/processed/combine_player_details.parquet")
 write_parquet(combine_player_seasons, "players/data/processed/combine_player_seasons.parquet")
