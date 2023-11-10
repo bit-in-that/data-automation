@@ -387,6 +387,6 @@ combine_player_details <- combine_players_both |>
     .groups = "drop"
   )
 
-write_parquet(combine_player_details, "players/data/processed/combine_player_stats.parquet")
+write_parquet(combine_player_details, "players/data/processed/combine_player_details.parquet")
 write_parquet(combine_player_seasons, "players/data/processed/combine_player_seasons.parquet")
 write_parquet(combine_player_stats, "players/data/processed/combine_player_stats.parquet")
