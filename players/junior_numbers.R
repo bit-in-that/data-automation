@@ -283,12 +283,20 @@ combine_player_stats <- bind_rows(
 
 combine_player_seasons <- combine_player_stats |> 
   group_by(
-    playerId, player_first_name, player_surname, tier, comp_name, season
+    playerId, tier, comp_name, season
   ) |> 
   summarise(
     games_played = n(),
     across(fantasy_points:frees_against, mean),
     .groups = "drop"
+  ) |> 
+  mutate(
+    tier_short = case_when(
+      tier == "Interstate Underage" ~ "interstate_underage",
+      tier == "State League" ~ "state_league",
+      tier == "State Reserves" ~ "state_reserves",
+      tier == "State Underage" ~ "state_underage"
+    )
   )
 
 player_metadata_afl <- player_details_all |> 
