@@ -299,6 +299,16 @@ combine_player_seasons <- combine_player_stats |>
     )
   )
 
+player_images_metadata <- player_stats_all |> 
+  filter(
+    playerId %in% unique(combine_players_both$playerId)
+  ) |> 
+  distinct(playerId, player_image = photoURL) |> 
+  group_by(playerId) |> 
+  summarise(
+    player_images_afl = list(unique(player_image))
+  )
+
 player_metadata_afl <- player_details_all |> 
   filter(
     playerId %in% unique(combine_players_both$playerId)
@@ -307,7 +317,6 @@ player_metadata_afl <- player_details_all |>
     playerId, #first_name = playerDetails.givenName, surname = playerDetails.surname, 
     date_of_birth = playerDetails.dateOfBirth,
     player_height = playerDetails.heightCm, player_weight = playerDetails.weightKg, year,
-    player_image = playerDetails.photoURL
   ) |> 
   arrange(desc(year)) |> 
   group_by(playerId) |>
@@ -315,7 +324,6 @@ player_metadata_afl <- player_details_all |>
     # first_name = head(first_name, 1),
     # surname = head(surname, 1),
     date_of_birth = date_of_birth |> table() |> which.max() |> names(),
-    player_images_afl = list(unique(player_image)),
     player_height_max = max(player_height),
     player_height_min = min(player_height),
     player_weight_max = max(player_weight),
@@ -328,6 +336,9 @@ player_metadata_afl <- player_details_all |>
     player_weight_min = if_else(player_weight_min == 0L, NA_integer_, player_weight_min),
     player_weight_range = if_else(player_weight_max == player_weight_min, as.character(player_weight_max), paste(player_weight_min, player_weight_max, sep = "-")),
     date_of_birth = as.Date(date_of_birth, format = "%d/%m/%Y")
+  ) |> 
+  left_join(
+    player_images_metadata, by = "playerId"
   )
 
 player_metadata_sanfl <- sanfl_player_stats |> 
