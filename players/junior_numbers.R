@@ -45,6 +45,8 @@ afl_combine_data_ids <- combine_data_ids |>
   )
 
 
+player_details_sanfl <- read_parquet("state_leagues/data/raw/player_details_sanfl.parquet")
+
 # Prepare data for different competitions ----
 ## SANFL ----
 sanfl_player_stats <- read_parquet("state_leagues/data/raw/sanfl_player_stats.parquet") |> 
