@@ -305,6 +305,9 @@ player_images_metadata <- player_stats_all |>
   filter(
     playerId %in% unique(combine_players_both$playerId)
   ) |> 
+  bind_rows(
+    player_details_all |> filter(playerId %in% unique(combine_players_both$playerId)) |> select(playerId, playerDetails.photoURL)
+  ) |>
   distinct(playerId, player_image = photoURL) |> 
   group_by(playerId) |> 
   summarise(
