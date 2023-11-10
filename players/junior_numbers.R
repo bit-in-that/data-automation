@@ -197,8 +197,8 @@ wafl_player_stats_cut <- wafl_player_stats |>
 
 ## U18 interstate championship ----
 combine_players_both <- bind_rows(
-  afl_combine_data_ids,
-  aflw_combine_data_ids
+  afl_combine_data_ids |> mutate(gender = "male"),
+  aflw_combine_data_ids |> mutate(gender = "female")
 ) |> 
   mutate(capitalised_name = paste(NAME, SURNAME) |> str_to_upper())
 
@@ -382,7 +382,7 @@ combine_player_details <- combine_players_both |>
     })
   ) |> 
   group_by(
-    player_first_name, player_surname, state, state_league_club, community_club,national_combine,
+    player_first_name, player_surname, gender, state, state_league_club, community_club,national_combine,
     date_of_birth, player_height_min, player_height_max, player_height_range, player_weight_min, player_weight_max, player_weight_range
   ) |> 
   summarise(
