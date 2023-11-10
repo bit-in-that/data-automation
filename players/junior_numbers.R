@@ -300,6 +300,7 @@ combine_player_seasons <- combine_player_stats |>
   )
 
 player_images_metadata <- player_stats_all |> 
+  arrange(desc(year)) |> 
   filter(
     playerId %in% unique(combine_players_both$playerId)
   ) |> 
