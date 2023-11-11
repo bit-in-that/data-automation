@@ -6,7 +6,7 @@ library(arrow)
 
 combine_data_ids <- read_parquet("players/data/raw/combine_data_ids.parquet")
 
-afl_url <- "https://www.afl.com.au/news/1030664/cal-twomeys-phantom-form-guide-top-draft-prospects-september-ranking/amp"
+afl_url <- "https://www.afl.com.au/news/1062561/cal-twomeys-phantom-form-guide-top-draft-prospects-november-ranking"
 sporting_news_url <- "https://www.sportingnews.com/au/afl/news/phantom-draft-2023-first-round-projection-top-20-picks/f7057d7638129eb2395ecbd8"
 fox_sports_url <- "https://www.foxsports.com.au/afl/draft/afl-draft-2023-power-rankings-afl-draft-news-rankings-after-2023-combine-date-picks-order/news-story/1169252a1e73bbf3d37d5dea0c5f3467"
 abc_url <- "https://amp.abc.net.au/article/103039892"
@@ -22,27 +22,27 @@ phantom_draft_order_afl <- c(
   "Nate Caddy",
   "Ethan Read",
   "Connor O'Sullivan",
-  "Jordan Croft",
-  "Jake Rogers",
-  "Ollie Murphy",
   "Caleb Windsor",
-  "Darcy Wilson",
   "James Leake",
-  "Riley Hardeman",
-  "Will McCabe",
+  "Jake Rogers",
+  "Jordan Croft",
+  "Darcy Wilson",
   "Koltyn Tholstrup",
-  "Harry DeMattia",
-  "Archer Reid",
-  "Archie Roberts",
-  "Will Green",
+  "Riley Hardeman",
   "Lance Collard",
-  "Tew Jiath",
+  "Will McCabe",
+  "Harry DeMattia",
   "Charlie Edwards",
+  "Tew Jiath",
+  "Archie Roberts",
+  "Ollie Murphy",
+  "Will Green",
   "Mitch Edwards",
-  "George Stevens",
-  "Jack Delean",
-  "Ashton Moir"
-) |> 
+  "Archer Reid",
+  "Phoenix Gothard",
+  "Taylor Goad",
+  "George Stevens"
+  ) |> 
   str_to_upper()
 
 phantom_draft_order_sporting_news <- sporting_news_url|> 
@@ -69,7 +69,7 @@ phantom_draft_order_fox_sports <- fox_sports_url |>
 
 phantom_draft_order_abc <- abc_url |> 
   read_html() |> 
-  html_elements("h2.SYcM3") |> 
+  html_elements("h2.r1bZO") |> 
   html_text() |> 
   str_remove("^[0-9]{1,2}\\.\\s") |> 
   str_to_upper()
@@ -112,7 +112,7 @@ phantom_draft_rankings_intermediate <- phantom_draft_rankings_initial |>
 
 phantom_draft_articles <- tibble(
   article_url = c(afl_url, sporting_news_url, fox_sports_url, abc_url),
-  article_date = as.Date(c("2023-09-12", "2023-10-30", "2023-10-16", "2023-11-05"))
+  article_date = as.Date(c("2023-11-11", "2023-10-30", "2023-10-16", "2023-11-05"))
 )
 
 # check if the player id gets mapped on correctly for all players:
