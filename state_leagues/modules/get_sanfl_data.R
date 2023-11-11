@@ -5,6 +5,7 @@ library(purrr)
 library(arrow)
 library(xml2)
 library(jsonlite)
+library(stringr)
 
 # years 2015 onwards, teamCodes in get_sanfl_ladder()$teamCode   
 # comps in sanfl, womens, reserves, u18, u16
