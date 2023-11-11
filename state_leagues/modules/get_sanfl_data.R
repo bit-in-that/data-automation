@@ -114,6 +114,10 @@ get_sanfl_player_stats <- function(player_id, if_modified_since = NULL) { #forma
 }
 
 transform_sanfl_player_data <- function(player_data_list, career = FALSE) {
+  if(is(player_data_list, "xml_document")) { #access denied error
+    return(NULL)
+  }
+  
   player_data_tb <- player_data_list$players[[1]] |> 
     map_if(is.null, ~ NA_character_) |> 
     map_if(is.list, list, .else = as.character) |> 
@@ -193,15 +197,8 @@ save_sanfl_player_details <- function() {
 save_sanfl_player_stats <- function() {
   player_details_sanfl <- read_parquet("state_leagues/data/raw/player_details_sanfl.parquet")
   sanfl_player_stats <- player_details_sanfl |>
-    filter(!is.na(playerId)) |> 
+    filter(!is.na(playerId), season_year >= 2021L) |> 
     distinct(playerId) |> 
-    # BUG TESTING CODE:
-    # filter(playerId == "1014624") |> 
-    # slice_sample(n = 2) |>
-    # {\(.x) {
-    #   print(.x$playerId)
-    #   .x
-    # }}() |> 
     rename(player_id = playerId) |> 
     mutate(
       player_stats = map(player_id, get_sanfl_player_stats) |> 
