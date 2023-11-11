@@ -402,7 +402,6 @@ combine_player_details <- combine_players_both |>
     date_of_birth, player_height_min, player_height_max, player_height_range, player_weight_min, player_weight_max, player_weight_range
   ) |> 
   summarise(
-    playerId = head(playerId, 1),
     playerIds = c(playerId,  playerId_wafl, playerId_sanfl) |> na_rm() |> list(),
     player_urls = reduce(player_urls, c) |> list(),
     player_url = head(player_url, n = 1),
@@ -411,6 +410,7 @@ combine_player_details <- combine_players_both |>
     .groups = "drop"
   ) |> 
   mutate(
+    playerId = map_chr(playerIds, head, n = 1),
     season_stats = map(playerIds, ~{
       combine_player_seasons |> 
         filter(playerId %in% .x) |> 
