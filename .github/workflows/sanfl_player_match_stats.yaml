@@ -20,7 +20,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("httr", "dplyr", "arrow", "purrr", "tidyr", "xml2", "jsonlite"))
+      run: install.packages(c("httr", "dplyr", "arrow", "purrr", "tidyr", "xml2", "jsonlite", "stringr"))
       shell: Rscript {0}
 
 
