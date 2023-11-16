@@ -192,7 +192,7 @@ wafl_player_stats_cut <- wafl_player_stats |>
     contested_marks = NA_integer_, ineffective_kicks = NA_integer_, kickins = NA_integer_, handballs_received = NA_integer_
   ) |> 
   filter(
-    comp_name != "WAFL Futures"
+    comp_name != "WAFL Futures", match_type != "Preseason"
   )
 
 ## U18 interstate championship ----
@@ -385,7 +385,7 @@ combine_player_details <- combine_players_both |>
   left_join(player_metadata_wafl, by = c("playerId_wafl" = "playerId")) |> 
   left_join(player_metadata_u18_champs, by = c("playerId")) |> 
   mutate(
-    player_url_afl = if_else(is.na(playerId), NA_character_, paste0("https://www.afl.com.au/stats/players?playerId=", playerId)),
+    player_url_afl = if_else(is.na(playerId), NA_character_, paste0("https://www.afl.com.au/draft/prospect/2023?playerId=", playerId)),
     player_urls = pmap(list(player_url_u18_champs, player_url_wafl, player_url_sanfl, player_url_afl), ~ na_rm(c(..1, ..2, ..3, ..4))),
     player_url = map_chr(player_urls, head, n = 1),
     player_images = pmap(list(player_image_wafl, player_image_sanfl, player_images_afl), ~ na_rm(c(..1, ..2, ..3))),
