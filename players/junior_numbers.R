@@ -377,6 +377,8 @@ player_metadata_u18_champs <- u18_champs_player_stats_mapped |>
   select(playerId = playerId_combined, player_url_u18_champs = player_url) |> 
   distinct()
 
+
+
 combine_player_details <- combine_players_both |> 
   rename(player_first_name = NAME, player_surname = SURNAME, state = STATE, state_league_club = `STATE LEAGUE CLUB`, community_club = `COMMUNITY CLUB`) |> 
   select(-capitalised_name) |> 
@@ -388,7 +390,14 @@ combine_player_details <- combine_players_both |>
     player_url_afl = if_else(is.na(playerId), NA_character_, paste0("https://www.afl.com.au/draft/prospect/2023?playerId=", playerId)),
     player_urls = pmap(list(player_url_u18_champs, player_url_wafl, player_url_sanfl, player_url_afl), ~ na_rm(c(..1, ..2, ..3, ..4))),
     player_url = map_chr(player_urls, head, n = 1),
-    player_images = pmap(list(player_image_wafl, player_image_sanfl, player_images_afl), ~ na_rm(c(..1, ..2, ..3))),
+    prospect_image_url = paste0("https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/prospects/2023/", str_remove(playerId, "CD_I"), ".png?im=Scale,width=0.6,height=0.6"),
+    player_images = pmap(list(player_image_wafl, player_image_sanfl, player_images_afl, gender, prospect_image_url), ~ {
+      images <- na_rm(c(..1, ..2, ..3)) 
+      if(..4 == "male") {
+        images <- c(..5, images)
+      }
+      images
+    }),
     player_image = map_chr(player_images, ~{
       if(length(.x) == 0L) {
         NA_character_
@@ -403,9 +412,9 @@ combine_player_details <- combine_players_both |>
   ) |> 
   summarise(
     playerIds = c(playerId,  playerId_wafl, playerId_sanfl) |> na_rm() |> list(),
-    player_urls = reduce(player_urls, c) |> list(),
+    player_urls = reduce(player_urls, c) |> unique() |> list(),
     player_url = head(player_url, n = 1),
-    player_images = reduce(player_images, c) |> list(),
+    player_images = reduce(player_images, c) |> unique() |> list(),
     player_image = head(player_image, n = 1),
     .groups = "drop"
   ) |> 
