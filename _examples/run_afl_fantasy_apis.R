@@ -2,7 +2,7 @@ library(jsonlite)
 
 source("_examples/modules/afl_fantasy_apis.R")
 
-session_id <- "81a0ffb18849cce788c5d368d31047c772e2e99d"
+session_id <- "d7f149554717df7d3062aa49f379a51b06537833"
 
 celebrities <- get_afl_fantasy_celebrities(session_id)
 write_json(celebrities, "_examples/output/celebrities.json", pretty = TRUE)
@@ -13,7 +13,7 @@ write_json(my_leagues, "_examples/output/my_leagues.json", pretty = TRUE)
 my_lineup <- get_afl_fantasy_my_lineup(session_id)
 write_json(my_lineup, "_examples/output/my_lineup.json", pretty = TRUE)
 
-lineup <- get_afl_fantasy_lineup(session_id, 84647)
+lineup <- get_afl_fantasy_lineup(session_id, 1)
 write_json(lineup, "_examples/output/lineup.json", pretty = TRUE)
 
 favourites <- get_afl_fantasy_favourites(session_id)
@@ -43,7 +43,7 @@ write_json(players, "_examples/output/venues.json", pretty = TRUE)
 squads <- get_afl_fantasy_squads()
 write_json(squads, "_examples/output/squads.json", pretty = TRUE)
 
-team_rank_history <- get_afl_fantasy_team_rank_history(session_id, user_id = 2673766)
+team_rank_history <- get_afl_fantasy_team_rank_history(session_id, user_id = 2673766) #1258257
 write_json(team_rank_history, "_examples/output/team_rank_history.json", pretty = TRUE)
 
 rankings <- get_afl_fantasy_rankings(session_id)

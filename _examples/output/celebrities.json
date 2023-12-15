@@ -2,39 +2,18 @@
   "success": [1],
   "result": [
     {
-      "id": [44],
-      "name": ["The Traders"],
-      "user_id": [2],
-      "firstname": ["Adam"],
-      "lastname": ["Child"]
-    },
-    {
-      "id": [43],
+      "id": [13],
       "name": ["Warne Dawgs"],
       "user_id": [1000010],
       "firstname": ["Adam"],
       "lastname": ["Child"]
     },
     {
-      "id": [46],
-      "name": ["destROY"],
-      "user_id": [1100050],
-      "firstname": ["Roy"],
-      "lastname": ["Davey"]
-    },
-    {
-      "id": [73],
+      "id": [26],
       "name": ["Calvinator"],
       "user_id": [1100064],
       "firstname": ["Calvin"],
       "lastname": ["Bent"]
-    },
-    {
-      "id": [27417],
-      "name": ["Fantasy Freako"],
-      "user_id": [1111760],
-      "firstname": ["Fantasy"],
-      "lastname": ["Freako"]
     }
   ],
   "errors": [],

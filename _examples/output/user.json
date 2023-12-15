@@ -20,6 +20,7 @@
     "recovered": [1],
     "recovered_tipping": [0],
     "played": [
+      [2023],
       [2022],
       [2018],
       [2017],
@@ -64,11 +65,12 @@
     "supported_club_offers": [0],
     "tipping_sponsor": [0],
     "tipping_sponsor_legitimate": [1],
-    "classic_team_is_complete": [1],
+    "classic_team_is_complete": [0],
     "classic_team_is_valid": [1],
     "acl": [0],
     "email_hashed": ["bcc122fda2ebe9b932ac87f42fe38a4b23839a531d1a19ba5c353d933abbe23a"],
-    "celebrity": [false]
+    "celebrity": [false],
+    "is_linked_account": [false]
   },
   "errors": [],
   "web_version": [209]
