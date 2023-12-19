@@ -32,6 +32,7 @@ jobs:
     - name: Run Script
       run: |
         source("afl_fantasy/player_selection_snapshots.R", echo = TRUE)
+        source("afl_fantasy/player_selection_processing.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
