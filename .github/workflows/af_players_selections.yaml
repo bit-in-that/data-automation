@@ -3,7 +3,7 @@ name: Player selection snapshots
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *" # every hour
+    - cron: "0 17 * * *" # 4AM AEST every day
   # push:
   #   branches:
   #     - main
@@ -25,7 +25,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("dplyr", "purrr", "httr", "arrow"))
+      run: install.packages(c("dplyr", "purrr", "httr", "arrow", "tidyr"))
       shell: Rscript {0}
 
 
