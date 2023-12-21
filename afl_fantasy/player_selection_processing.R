@@ -2,7 +2,7 @@ library(dplyr)
 library(tidyr)
 library(arrow)
 
-source("_examples/modules/afl_fantasy_apis.R")
+# source("_examples/modules/afl_fantasy_apis.R")
 
 player_selections_initial <- read_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
 
@@ -28,9 +28,9 @@ player_selections_long <- player_selections_initial |>
   ) |> 
   group_by(id) |> 
   mutate(
-    selections_diff = c(0L, diff(selections)),
-    fantasy_coaches_diff = c(0L, diff(fantasy_coaches)),
-    owned_by_adjusted_diff = c(0L, diff(owned_by_adjusted))
+    selections_diff = c(head(selections, 1), diff(selections)),
+    fantasy_coaches_diff = c(head(fantasy_coaches, 1), diff(fantasy_coaches)),
+    owned_by_adjusted_diff = c(head(owned_by_adjusted, 1), diff(owned_by_adjusted))
   ) |> 
   ungroup() |> 
   mutate(
