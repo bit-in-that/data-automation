@@ -23,7 +23,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "tibble", "arrow"))
+      run: install.packages(c("httr2", "purrr", "tibble", "arrow", "jsonlite"))
       shell: Rscript {0}
 
 
