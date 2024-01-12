@@ -1,45 +1,48 @@
-user_id,team_id_2023,name,team_name,organisation,known_for,individual_url,include
-1258257,3061,Tim Gummer,Gummer's Stunners,bit in that,,,FALSE
-1424151,37338,Michael Thomas,Jayden Tall,bit in that,,,FALSE
-1006405,24888,Tom Marshall,Wolf of Watkins St,bit in that,,,FALSE
-2813788,160518,Bit In That,Bit In That,bit in that,,https://twitter.com/bitinthat,FALSE
-1922154,58,Matt Mottram,Mottram's Marvels,,2022 Winner,https://twitter.com/mattmottram,TRUE
-1100050,46,Roy,destROY,The Traders,,https://twitter.com/RoyDT,TRUE
-1000010,43,Warney,Warne Dawgs,The Traders,,https://twitter.com/WarnieDT,TRUE
-1100064,73,Calvin,Calvinator,The Traders,,https://twitter.com/CalvinDT,TRUE
-2,44,The Traders,The Traders,The Traders,,,FALSE
-2537626,163,Dejan,Can't go Serong,The Traders,Some guy who works behind the scenes Warney describes as a nerd,https://twitter.com/DejanKalinic,FALSE
-1111760,27417,Fantasy Freako,Fantasy Freako,Chamption Data,Fantasy Freako,https://twitter.com/FantasyFreako,TRUE
-1134396,3862,DC,DC Caterpillars,Hat Chat,,https://twitter.com/DCCaterpillars,TRUE
-1808282,361,Nathan,The Obermullets,Hat Chat,,https://twitter.com/Obermullet,TRUE
-1385283,94,Jake,Dunkley's Donuts,Hat Chat,,https://twitter.com/SanchFantasy,TRUE
-1449397,233,Sanch,Sanch's Snags,Hat Chat,,https://twitter.com/DunkleysDonuts,TRUE
-2650072,9128,Mrs DC,Mrs DC's Butterflies,Hat Chat,,https://twitter.com/MRS___DC,TRUE
-2125478,1371,Mitch,Michmond,Ball Boys,,https://twitter.com/ballboysfantasy,TRUE
-1532324,1476,Luke,Mike 0xshort,Ball Boys,,https://twitter.com/lukerogo17,TRUE
-1373578,1547,Jeppa,Jeppas Juniors,Plus Six Podcast,,https://twitter.com/JeppaDT,TRUE
-1122693,13396,Guesty,Guesty's Gerbils,AFL Fantasy Fanatics,,https://twitter.com/timguestau,TRUE
-2255419,1250,Bails,Bails Nails,AFL Fantasy Fanatics,,https://twitter.com/BailsDT,TRUE
-1857234,112,MiniMonk,MiniMonk,Coaches Panel,,https://twitter.com/MiniMonk10,TRUE
-1250074,414,Dossy,Dosreira's Magic,PodPod,,https://twitter.com/HKDos,TRUE
-2321224,3366,Holmesy,Holmesyheroes,PodPod,,https://twitter.com/Holmesyheroes,TRUE
-1150154,63,Harmey,Hirdy's Heroes,PodPod,,https://twitter.com/jonharmey,TRUE
-1570030,217,Lewy,Say Sheez,PodPod,,https://twitter.com/LewyAF,TRUE
-1111472,25952,The Statesman,Statesman,PodPod,,https://twitter.com/Statesman33,TRUE
-1961516,71996,Alex Witherdon,Withingtons warriors,,AFL Fantasy Ambassador,,FALSE
-2774078,133160,Luke Jackson,Action Jacksons,,AFL Fantasy Ambassador,,FALSE
-1281872,5863,Leatherheads Footy,Leatherheads Footy,,Leatherheads Footy (inactive),https://www.youtube.com/@leatherheadsfooty,FALSE
-1557670,4039,Marcus Rose,Sportsbet Official,,"Is this actually their ""official"" page",,FALSE
-1759244,460,Jaiden Popowski,JPop's Jackpots,DT Talk,,https://twitter.com/jaiden_popowski,TRUE
-1199356,5864,DT Lemon,Gorringes and Lemmens,DT Talk,,https://twitter.com/Lemon_DT,TRUE
-2238095,4096,Nug,Junktime Janitors,Breakeven Podcast,,https://twitter.com/janitorstime,FALSE
-1519911,16014,Millar,Haircut 2's NHFAHCFC-2,Breakeven Podcast,,https://twitter.com/time_millar,FALSE
-,,Doe,Matt Lachlan,Breakeven Podcast,,https://twitter.com/doee48,FALSE
-1564098,369,Cara,Hot & Gawny,,AFLFantasyPerth,,FALSE
-2241906,22976,Bindy,Bindi’s Blues,,Appears on podcasts recently,https://twitter.com/DT_Bindi,FALSE
-1519605,783,Levi,Winter is Cumming,,A guy in the community who has done well for a few seasons,,FALSE
-1209447,702,Keebs,The Super Subs,Cousins AFL Fantasy,,https://twitter.com/thecousinspod,TRUE
-1454648,18028,Jaydos,No Fyfe No Life Know Fyfe Know Life,Cousins AFL Fantasy,,https://twitter.com/thecousinspod,TRUE
-1475876,34706,Benji's Bashers,Benji's Bashers,,Seems uniquely skilled at high value teams,,TRUE
-1530082,118992,Dyl Smith,MBP,Fantasy People,,,TRUE
-1978990,326,Drama Llama,The Angry Drama Llamas,,,https://twitter.com/Drama_Llamas_DT,TRUE
+user_id,name,team_name,organisation,known_for,individual_url,include
+1258257,Tim Gummer,Gummer's Stunners,bit in that,,,FALSE
+1424151,Michael Thomas,Jayden Tall,bit in that,,,FALSE
+1006405,Tom Marshall,Wolf of Watkins St,bit in that,,,FALSE
+2813788,Bit In That,Bit In That,bit in that,,https://twitter.com/bitinthat,FALSE
+1922154,Matt Mottram,Mottram's Marvels,,2022 Winner,https://twitter.com/mattmottram,TRUE
+1100050,Roy,destROY,The Traders,,https://twitter.com/RoyDT,TRUE
+1000010,Warney,Warne Dawgs,The Traders,,https://twitter.com/WarnieDT,TRUE
+1100064,Calvin,Calvinator,The Traders,,https://twitter.com/CalvinDT,TRUE
+2,The Traders,The Traders,The Traders,,,FALSE
+2537626,Dejan,Can't go Serong,The Traders,Some guy who works behind the scenes Warney describes as a nerd,https://twitter.com/DejanKalinic,FALSE
+1111760,Fantasy Freako,Fantasy Freako,Chamption Data,Fantasy Freako,https://twitter.com/FantasyFreako,TRUE
+1134396,DC,DC Caterpillars,Hat Chat,,https://twitter.com/DCCaterpillars,TRUE
+1808282,Nathan,The Obermullets,Hat Chat,,https://twitter.com/Obermullet,TRUE
+1385283,Jake,Dunkley's Donuts,Hat Chat,,https://twitter.com/SanchFantasy,TRUE
+1449397,Sanch,Sanch's Snags,Hat Chat,,https://twitter.com/DunkleysDonuts,TRUE
+2650072,Mrs DC,Mrs DC's Butterflies,Hat Chat,,https://twitter.com/MRS___DC,TRUE
+2125478,Mitch,Michmond,Ball Boys,,https://twitter.com/ballboysfantasy,TRUE
+1532324,Luke,Mike 0xshort,Ball Boys,,https://twitter.com/lukerogo17,TRUE
+1373578,Jeppa,Jeppas Juniors,Plus Six Podcast,,https://twitter.com/JeppaDT,TRUE
+1122693,Guesty,Guesty's Gerbils,AFL Fantasy Fanatics,,https://twitter.com/timguestau,TRUE
+2255419,Bails,Bails Nails,AFL Fantasy Fanatics,,https://twitter.com/BailsDT,TRUE
+1857234,MiniMonk,MiniMonk,Coaches Panel,,https://twitter.com/MiniMonk10,TRUE
+1250074,Dossy,Dosreira's Magic,PodPod,,https://twitter.com/HKDos,TRUE
+2321224,Holmesy,Holmesyheroes,PodPod,,https://twitter.com/Holmesyheroes,TRUE
+1150154,Harmey,Hirdy's Heroes,PodPod,,https://twitter.com/jonharmey,TRUE
+1570030,Lewy,Say Sheez,PodPod,,https://twitter.com/LewyAF,TRUE
+1111472,The Statesman,Statesman,PodPod,,https://twitter.com/Statesman33,TRUE
+1961516,Alex Witherdon,Withingtons warriors,,AFL Fantasy Ambassador,,FALSE
+2774078,Luke Jackson,Action Jacksons,,AFL Fantasy Ambassador,,FALSE
+1281872,Leatherheads Footy,Leatherheads Footy,,Leatherheads Footy (inactive),https://www.youtube.com/@leatherheadsfooty,FALSE
+1557670,Marcus Rose,Sportsbet Official,,"Is this actually their ""official"" page",,FALSE
+1759244,Jaiden Popowski,JPop's Jackpots,DT Talk,,https://twitter.com/jaiden_popowski,TRUE
+1199356,DT Lemon,Gorringes and Lemmens,DT Talk,,https://twitter.com/Lemon_DT,TRUE
+2238095,Nug,Junktime Janitors,Breakeven Podcast,,https://twitter.com/janitorstime,FALSE
+1519911,Millar,Haircut 2's NHFAHCFC-2,Breakeven Podcast,,https://twitter.com/time_millar,FALSE
+,Doe,Matt Lachlan,Breakeven Podcast,,https://twitter.com/doee48,FALSE
+1564098,Cara,Hot & Gawny,,AFLFantasyPerth,,FALSE
+2241906,Bindy,Bindi's Blues,,Appears on podcasts recently,https://twitter.com/DT_Bindi,FALSE
+1519605,Levi,Winter is Cumming,,A guy in the community who has done well for a few seasons,,FALSE
+1209447,Keebs,The Super Subs,Cousins AFL Fantasy,,https://twitter.com/thecousinspod,TRUE
+1454648,Jaydos,No Fyfe No Life Know Fyfe Know Life,Cousins AFL Fantasy,,https://twitter.com/thecousinspod,TRUE
+1475876,Benji's Bashers,Benji's Bashers,,Seems uniquely skilled at high value teams,,TRUE
+1530082,Dyl Smith,MBP,Fantasy People,,,FALSE
+1978990,Drama Llama,The Angry Drama Llamas,,,https://twitter.com/Drama_Llamas_DT,TRUE
+1109522,Vams,Fantasynut,,,https://twitter.com/mryellowtbuk,TRUE
+1001077,JD // FTTV,JD - FTTV,,,https://twitter.com/jacksondavey,TRUE
+,Fry,, ,,https://twitter.com/sportsbyfry,FALSE

@@ -4,7 +4,10 @@ library(tibble)
 library(arrow)
 
 session_id <- "b16a3d90377b0ddd9ab0f7ab15a8dbc904082d6a"
-# session_id2 <- "d7f149554717df7d3062aa49f379a51b06537833"
+
+afl_fantasy_team_ids <- read_parquet("afl_fantasy/data/raw/2024/afl_fantasy_team_ids.parquet")
+
+next_id <- max(afl_fantasy_team_ids$team_id) + 1
 
 handle_data <- function(resp) {
   resp_json <- resp |> 
@@ -35,7 +38,7 @@ base_req <- request("https://fantasy.afl.com.au/afl_classic/api/teams_classic/sh
   req_url_query(!!!params) |>
   req_headers(!!!headers)
 
-req_list <- ((1:39200)) |> 
+req_list <- ((1:2000) + next_id) |> 
   map(~base_req |> req_url_query(id = .x))
 
 system.time({
