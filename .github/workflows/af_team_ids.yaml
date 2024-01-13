@@ -2,6 +2,7 @@ name: AFL Fantasy Team IDs
 
 on: 
   workflow_dispatch:
+  schedule:
   - cron: "0 14 * * *" # 1AM ADST every day
   # push:
   #   branches:
