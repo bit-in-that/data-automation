@@ -1,6 +1,6 @@
 library(httr2)
 library(purrr)
-library(tibble)
+library(dplyr)
 library(arrow)
 
 session_id <- "b16a3d90377b0ddd9ab0f7ab15a8dbc904082d6a"
