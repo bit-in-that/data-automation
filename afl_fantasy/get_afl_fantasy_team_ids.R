@@ -53,6 +53,8 @@ system.time({
     resps_data(handle_data)
 })
 
-resp_tbl |> 
-  write_parquet("afl_fantasy/data/raw/2024/afl_fantasy_team_ids.parquet")
+print(paste("Number of rows added:", nrow(resp_tbl)))
 
+afl_fantasy_team_ids |> 
+  bind_rows(resp_tbl) |> 
+  write_parquet("afl_fantasy/data/raw/2024/afl_fantasy_team_ids.parquet")
