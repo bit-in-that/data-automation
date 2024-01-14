@@ -8,6 +8,10 @@ squad_data <- get_squad_data()
 
 session_id <- "533aac36e90c0ae896cb3a89_1696920884"
 
+source("aflw_fantasy/modules/get_afw_session_id.R")
+session_id <- get_afw_session_id()
+
+
 rankings_data <- get_ranking_data(session_id, squad_data)
 
 write_parquet(ranking_data, "aflw_fantasy/data/processed/ranking_data.parquet")

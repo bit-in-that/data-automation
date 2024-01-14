@@ -203,7 +203,8 @@ save_top_10000_lineups <- function(session_id) {
 }
 
 # TESTING:
-session_id <- "81a0ffb18849cce788c5d368d31047c772e2e99d"
+source("afl_fantasy/modules/get_af_session_id.R")
+session_id <- get_af_session_id()
 
 
 x <- get_af_my_team_raw(session_id)
