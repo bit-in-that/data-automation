@@ -1,4 +1,4 @@
-name: Player selection snapshots
+name: afl fantasy player selection snapshots
 
 on: 
   workflow_dispatch:
