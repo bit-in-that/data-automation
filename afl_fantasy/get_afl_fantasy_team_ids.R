@@ -3,7 +3,8 @@ library(purrr)
 library(dplyr)
 library(arrow)
 
-session_id <- "b16a3d90377b0ddd9ab0f7ab15a8dbc904082d6a"
+source("afl_fantasy/modules/get_af_session_id.R")
+session_id <- get_af_session_id()
 
 afl_fantasy_team_ids <- read_parquet("afl_fantasy/data/raw/2024/afl_fantasy_team_ids.parquet")
 

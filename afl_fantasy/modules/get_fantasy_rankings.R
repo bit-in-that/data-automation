@@ -3,9 +3,11 @@ library(fst)
 
 # 2813788
 
+source("afl_fantasy/modules/get_af_session_id.R")
+
 get_ranking_data <- function(team_ids, data_suffix, save_data = TRUE) {
   
-  session_id <- "e3526fbe4f1f94016a39a5a58cba41c5f744ea59"
+  session_id <- get_af_session_id()
   userids <- integer(length(team_ids))
   ranks <- integer(length(team_ids))
   scores <- integer(length(team_ids))

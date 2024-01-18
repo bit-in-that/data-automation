@@ -2,7 +2,8 @@ library(jsonlite)
 
 source("_examples/modules/afl_fantasy_apis.R")
 
-session_id <- "d7f149554717df7d3062aa49f379a51b06537833"
+source("afl_fantasy/modules/get_af_session_id.R")
+session_id <- get_af_session_id()
 
 celebrities <- get_afl_fantasy_celebrities(session_id)
 write_json(celebrities, "_examples/output/celebrities.json", pretty = TRUE)

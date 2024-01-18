@@ -7,8 +7,6 @@ library(arrow)
 source("aflw_fantasy/modules/get_player_data_afw.R")
 source("aflw_fantasy/modules/get_rounds_afw.R") # uses jsonlite
 
-# session_id <- "ff36262fdd7c030c61ec4e85_1692610963"
-
 get_afw_my_team_raw <- function(session_id) {
   headers = c(
     cookie = paste0("X-SID=", session_id, ";")
