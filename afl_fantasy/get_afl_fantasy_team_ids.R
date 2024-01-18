@@ -1,6 +1,6 @@
 library(httr2)
 library(purrr)
-library(tibble)
+library(dplyr)
 library(arrow)
 
 source("afl_fantasy/modules/get_af_session_id.R")
