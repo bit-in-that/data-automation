@@ -14,6 +14,8 @@ player_selections_long <- player_selections_initial |>
   mutate(
     fantasy_coaches = round(selections / owned_by * 100, 0)
   ) |> 
+  # filter out the early small sample size day because its pretty meaningless
+  filter(fantasy_coaches > 1000) |> 
   select(fantasy_coaches, snapshot_time) |> 
   distinct(fantasy_coaches, .keep_all = TRUE) |> 
   inner_join(player_selections_initial, y = _, by = "snapshot_time") |> 
@@ -34,15 +36,19 @@ player_selections_long <- player_selections_initial |>
   ) |> 
   ungroup() |> 
   mutate(
+    selections_adjusted_diff = round(owned_by_adjusted_diff * completed_teams / 100, 0),
     snapshot_date = format(snapshot_time, format = "%Y_%m_%d")
   )
 
-
-player_selections_wide <- player_selections_long |> 
-  mutate(
-    snapshot_date = format(snapshot_time, format = "%Y_%m_%d")
-  ) |> 
-  pivot_wider(id_cols = c("id", "first_name", "last_name"), names_from = "snapshot_date", 
-              values_from = c("selections", "fantasy_coaches", "owned_by_adjusted"))
+# Note currently used but might come in handy later:
+if(FALSE) {
+  player_selections_wide <- player_selections_long |> 
+    mutate(
+      snapshot_date = format(snapshot_time, format = "%Y_%m_%d")
+    ) |> 
+    pivot_wider(id_cols = c("id", "first_name", "last_name"), names_from = "snapshot_date", 
+                values_from = c("selections", "fantasy_coaches", "owned_by_adjusted"))
+  
+}
 
 write_parquet(player_selections_long, "afl_fantasy/data/processed/2024/player_selections_long.parquet")
