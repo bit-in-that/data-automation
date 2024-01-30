@@ -37,7 +37,10 @@ player_selections_long <- player_selections_initial |>
   ungroup() |> 
   mutate(
     selections_adjusted_diff = round(owned_by_adjusted_diff * completed_teams / 100, 0),
-    snapshot_date = format(snapshot_time, format = "%Y_%m_%d")
+    # snapshot_date = format(snapshot_time, format = "%Y_%m_%d"),
+    snapshot_date = as.Date(snapshot_time, tz = "Australia/Sydney") - 1,
+    text_snapshot = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Owned By  % (Adjusted): ", round(owned_by_adjusted, 2), "<br />Owned By  % (Official): ", round(owned_by, 2), "<br /># Coaches: ", fantasy_coaches, " (", round(100*completion_percentage, 1), "% complete)"),
+    text_daily_change = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Daily Movement In Adjusted Ownership: ", round(owned_by_adjusted_diff, 2), "% (", selections_adjusted_diff,")", "<br /># Coaches: ", fantasy_coaches, " (", round(100*completion_percentage, 1), "% complete)")
   )
 
 # Note currently used but might come in handy later:
