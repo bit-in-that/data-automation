@@ -22,7 +22,11 @@ player_selections_long <- player_selections_initial |>
   group_by(snapshot_time, fantasy_coaches) |>
   mutate(
     completed_teams = sum(selections) / 30,
-    completion_percentage = completed_teams / fantasy_coaches
+    completion_percentage = completed_teams / fantasy_coaches,
+    completion_percentage_captain = sum(selections_captain) / 100,
+    completion_percentage_vice_captain = sum(selections_vice_captain) / 100,
+    completion_percentage_bench = sum(selections_bench) / 8 / 100,
+    completion_percentage_emergency = sum(selections_emergency) / 4 / 100
   ) |> 
   ungroup() |> 
   mutate(
