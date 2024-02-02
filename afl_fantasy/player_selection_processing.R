@@ -44,7 +44,18 @@ player_selections_long <- player_selections_initial |>
     # snapshot_date = format(snapshot_time, format = "%Y_%m_%d"),
     snapshot_date = as.Date(snapshot_time, tz = "Australia/Sydney") - 1,
     text_snapshot = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Owned By (Adjusted): ", round(owned_by_adjusted, 2), "%<br />Owned By (Official): ", round(owned_by, 2), "% (", selections,")<br /># Coaches: ", fantasy_coaches, " (", round(100*completion_percentage, 1), "% complete)"),
-    text_daily_change = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Daily Movement In Adjusted Ownership: ", round(owned_by_adjusted_diff, 2), "% (", selections_adjusted_diff,")", "<br /># Coaches: ", fantasy_coaches, " (", round(100*completion_percentage, 1), "% complete)")
+    text_daily_change = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Daily Movement In Adjusted Ownership: ", round(owned_by_adjusted_diff, 2), "% (", selections_adjusted_diff,")", "<br /># Coaches: ", fantasy_coaches, " (", round(100*completion_percentage, 1), "% complete)"),
+    selections_captain_adjusted = bound_values(selections_captain / completion_percentage_captain, 100),
+    selections_captain_if_owned = bound_values(selections_captain / owned_by * 100, 100),
+    selections_vice_captain_adjusted = bound_values(selections_vice_captain / completion_percentage_vice_captain, 100),
+    selections_vice_captain_if_owned = bound_values(selections_vice_captain / owned_by  * 100, 100),
+    selections_bench_adjusted = bound_values(selections_bench / completion_percentage_bench, 100),
+    selections_bench_if_owned = bound_values(selections_bench / owned_by * 100, 100),
+    selections_emergency_adjusted = bound_values(selections_emergency / completion_percentage_emergency, 100),
+    selections_emergency_if_owned = bound_values(selections_emergency / owned_by * 100, 100),
+    selections_emergency_if_bench = bound_values(selections_emergency / selections_bench * 100, 100),
+    selections_any_captain_adjusted = selections_captain_adjusted + selections_vice_captain_adjusted,
+    selections_any_captain_if_owned = selections_captain_if_owned + selections_vice_captain_adjusted
   )
 
 # Note currently used but might come in handy later:
