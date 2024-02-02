@@ -4,6 +4,16 @@ library(arrow)
 
 # source("_examples/modules/afl_fantasy_apis.R")
 
+bound_values <- function(x, max_value) {
+  case_when(
+    is.nan(x) ~ 0,
+    x>max_value ~ max_value,
+    TRUE ~ x
+  ) |> 
+    round(digits = 2)
+}
+
+
 player_selections_initial <- read_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
 
 player_selections_long <- player_selections_initial |> 
