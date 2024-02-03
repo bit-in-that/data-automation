@@ -65,7 +65,7 @@ player_selections_long <- player_selections_initial |>
     selections_emergency_if_owned = bound_values(selections_emergency / owned_by * 100, 100),
     selections_emergency_if_bench = bound_values(selections_emergency / selections_bench * 100, 100),
     selections_any_captain_adjusted = selections_captain_adjusted + selections_vice_captain_adjusted,
-    selections_any_captain_if_owned = selections_captain_if_owned + selections_vice_captain_adjusted
+    selections_any_captain_if_owned = selections_captain_if_owned + selections_vice_captain_if_owned
   )
 
 # Note currently used but might come in handy later:
