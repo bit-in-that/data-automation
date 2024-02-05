@@ -1,7 +1,7 @@
 user_id,name,team_name,organisation,known_for,individual_url,include
-1258257,Tim Gummer,Gummer's Stunners,bit in that,,,FALSE
-1424151,Michael Thomas,Jayden Tall,bit in that,,,FALSE
-1006405,Tom Marshall,Wolf of Watkins St,bit in that,,,FALSE
+1258257,Tim Gummer,Gummer's Stunners,bit in that,,https://twitter.com/bitinthat,FALSE
+1424151,Michael Thomas,Jayden Tall,bit in that,,https://twitter.com/mthommo14,FALSE
+1006405,Tom Marshall,Wolf of Watkins St,bit in that,,https://twitter.com/Tommeeehhh,FALSE
 2813788,Bit In That,Bit In That,bit in that,,https://twitter.com/bitinthat,FALSE
 1922154,Matt Mottram,Mottram's Marvels,,2022 Winner,https://twitter.com/mattmottram,TRUE
 1100050,Roy,destROY,The Traders,,https://twitter.com/RoyDT,TRUE
@@ -30,7 +30,7 @@ user_id,name,team_name,organisation,known_for,individual_url,include
 2774078,Luke Jackson,Action Jacksons,,AFL Fantasy Ambassador,,FALSE
 1281872,Leatherheads Footy,Leatherheads Footy,,Leatherheads Footy (inactive),https://www.youtube.com/@leatherheadsfooty,FALSE
 1557670,Marcus Rose,Sportsbet Official,,"Is this actually their ""official"" page",,FALSE
-1759244,Jaiden Popowski,JPop's Jackpots,DT Talk,,https://twitter.com/jaiden_popowski,TRUE
+1759244,Jaiden Popowski,JPop's Jackpots,Stats By Jaiden,,https://twitter.com/jaiden_popowski,TRUE
 1199356,DT Lemon,Gorringes and Lemmens,DT Talk,,https://twitter.com/Lemon_DT,TRUE
 2238095,Nug,Junktime Janitors,Breakeven Podcast,,https://twitter.com/janitorstime,FALSE
 1519911,Millar,Haircut 2's NHFAHCFC-2,Breakeven Podcast,,https://twitter.com/time_millar,FALSE
@@ -49,3 +49,4 @@ user_id,name,team_name,organisation,known_for,individual_url,include
 2369448,Eno,eno FTTV,Fantasy Take TV,,https://twitter.com/enoFTTV,TRUE
 1114294,Fry,Large Frys and Coke,Sports By Fry,,https://twitter.com/sportsbyfry,TRUE
 2318494,Ky Broome,Brooomey,Ky Broome Sports Fantasy,,https://twitter.com/KyBroome2,TRUE
+2673766,Darren Carr,Wise Ocean PODs,Wise Ocean PODs,,https://twitter.com/WiseOceanPODs,TRUE
