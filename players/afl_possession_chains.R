@@ -12,10 +12,12 @@ handle_data <- function(resp) {
     return(NULL)
   }
   
+  chain_ids = seq_along(resp_json$matchChains)
+  
   resp_json$matchChains |> 
-    bind_rows() |> 
+    map2(chain_ids, ~c(list(chain_number = .y), .x)) |> 
+    bind_rows() |>
     mutate(
-      chain_number = seq_along(stats),
       stats = map(stats, bind_rows)
     ) |> 
     unnest(stats, names_sep = "_") |> 
