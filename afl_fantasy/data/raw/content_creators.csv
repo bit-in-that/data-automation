@@ -37,7 +37,7 @@ user_id,name,team_name,organisation,known_for,individual_url,include
 ,Doe,Matt Lachlan,Breakeven Podcast,,https://twitter.com/doee48,FALSE
 1564098,Cara,Hot & Gawny,,AFLFantasyPerth,,FALSE
 2241906,Bindy,Bindi's Blues,,Appears on podcasts recently,https://twitter.com/DT_Bindi,TRUE
-1519605,Levi,Winter is Cumming,,A guy in the community who has done well for a few seasons,,FALSE
+1519605,Levi,Winter is Cumming,,A guy in the community who has done well for a few seasons,,TRUE
 1209447,Keebs,The Super Subs,Cousins AFL Fantasy,,https://twitter.com/thecousinspod,TRUE
 1454648,Jaydos,No Fyfe No Life Know Fyfe Know Life,Cousins AFL Fantasy,,https://twitter.com/thecousinspod,TRUE
 1475876,Benji's Bashers,Benji's Bashers,,Seems uniquely skilled at high value teams,,TRUE
@@ -52,5 +52,5 @@ user_id,name,team_name,organisation,known_for,individual_url,include
 2673766,Darren Carr,Wise Ocean PODs,Wise Ocean PODs,,https://twitter.com/WiseOceanPODs,TRUE
 2070408,The Wongster,Purple Cow,Moreira's Magic,,https://twitter.com/theWongster,TRUE
 1120564,Hazy,Hazy's Heroes,,,https://twitter.com/nhayes43,TRUE
-1109415,Rids,Ridley United,The Coaches Panel,,https://twitter.com/RidsCp,TRUE
-1000056,MJ,Crouches Treloar,The Coaches Panel,,https://twitter.com/mjwant,TRUE
+1109415,Rids,Ridley United,Coaches Panel,,https://twitter.com/RidsCp,TRUE
+1000056,MJ,Crouches Treloar,Coaches Panel,,https://twitter.com/mjwant,TRUE
