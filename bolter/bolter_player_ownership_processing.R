@@ -4,9 +4,16 @@ library(dplyr)
 bolter_player_ownership_snapshots <- read_parquet("bolter/data/raw/bolter_player_ownership_snapshots.parquet")
 
 bolter_player_ownership_processed <- bolter_player_ownership_snapshots |> 
-  mutate(snapshot_date = as.Date(snapshot_time, tz = "Australia/Perth") - 1) |> 
-  select(-snapshot_time) |> 
+  mutate(
+    snapshot_date = as.Date(snapshot_time, tz = "Australia/Perth") - 1
+    ) |> 
+  select(-snapshot_time) |>
   distinct(.keep_all = TRUE) |> 
+  group_by(player_id, snapshot_date) |> 
+  mutate(
+    snapshot_id = paste0(format(snapshot_date, "%Y-%m-%d"), "_", seq_along(player_id))
+  ) |> 
+  ungroup() |> View()
   group_by(snapshot_date) |> 
   mutate(
     adjustment_factor = sum(ownership * plays_r0) / 30 / 100
