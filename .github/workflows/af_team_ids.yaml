@@ -25,7 +25,7 @@ jobs:
 
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite"))
+      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "curl"))
       shell: Rscript {0}
 
 
