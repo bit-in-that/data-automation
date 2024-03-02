@@ -3,7 +3,7 @@ name: bolter player ownership snapshots
 on: 
   workflow_dispatch:
   schedule:
-    - cron: "15 * * * *" # every hour for now
+    - cron: "15 22 * * *" # 8:15AM Perth time (one of a few times that ownership seems to change)
     # - cron: "0 17 * * *" # change it to 4AM AEST every day afterwards
   # push:
   #   branches:
@@ -17,7 +17,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup R
       uses: r-lib/actions/setup-r@v2
