@@ -23,9 +23,12 @@ jobs:
       with:
         use-public-rspm: true
 
+    - name: get libcurl
+      run: |
+        sudo apt-get install libcurl4-openssl-dev
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "curl"))
+      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite"))
       shell: Rscript {0}
 
 
