@@ -46,7 +46,8 @@ tranform_player_df <- function(player) {
         {if(is_ruck) "Ruc" else NULL},
         {if(is_midfielder) "Mid" else NULL}
       ) |> 
-        paste(collapse = "/")
+        paste(collapse = "/"),
+      tog = as.integer(tog)
     )
 }
 
