@@ -37,7 +37,8 @@ tranform_player_df <- function(player) {
       is_ruck = 3 %in% positions,
       is_forward = 4 %in% positions
     ),
-    player$stats[c("season_rank", "games_played", "total_points", "avg_points", "high_score", "low_score", "last_3_avg", "last_5_avg", "adp", "proj_avg", "rd_tog", "tog", "leagues_rostered", "last_3_proj_avg")]
+    # rd_tog removed for now, try to bring it back once problem figured out
+    player$stats[c("season_rank", "games_played", "total_points", "avg_points", "high_score", "low_score", "last_3_avg", "last_5_avg", "adp", "proj_avg", "tog", "leagues_rostered", "last_3_proj_avg")]
   ) |> 
     mutate(
       position = c(
@@ -46,8 +47,7 @@ tranform_player_df <- function(player) {
         {if(is_ruck) "Ruc" else NULL},
         {if(is_midfielder) "Mid" else NULL}
       ) |> 
-        paste(collapse = "/"),
-      rd_tog = as.integer(rd_tog)
+        paste(collapse = "/")
     )
 }
 
