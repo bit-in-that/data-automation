@@ -47,7 +47,7 @@ tranform_player_df <- function(player) {
         {if(is_midfielder) "Mid" else NULL}
       ) |> 
         paste(collapse = "/"),
-      tog = as.integer(tog)
+      rd_tog = as.integer(rd_tog)
     )
 }
 
