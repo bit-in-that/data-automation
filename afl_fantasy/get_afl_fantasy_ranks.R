@@ -6,6 +6,7 @@ library(arrow)
 source("afl_fantasy/modules/get_af_session_id.R")
 session_id <- get_af_session_id()
 
+# afl_fantasy_rankings <- read_parquet("afl_fantasy/data/raw/2024/afl_fantasy_rankings.parquet")
 afl_fantasy_team_ids <- read_parquet("afl_fantasy/data/raw/2024/afl_fantasy_team_ids.parquet") |> 
   filter(team_id <= 150100L) # this is the team ID where round 1 playing teams stop (hard to make up 1800ish points if you start later)
 
