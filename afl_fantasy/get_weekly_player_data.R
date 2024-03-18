@@ -1,6 +1,7 @@
 library(dplyr)
 library(purrr)
 library(arrow)
+library(tidyr)
 
 source("_examples/modules/afl_fantasy_apis.R")
 
@@ -24,10 +25,28 @@ players <- get_afl_fantasy_players()
 players2 <- get_afl_fantasy_players2()
 squads <- get_afl_fantasy_squads() 
 
+named_list_to_tibble <- function(x, col_names = c("name", "value")) {
+  tibble(
+    name = names(x),
+    value = unlist(x)
+  ) |> 
+    `colnames<-`(col_names)
+}
+
 
 tranform_player_df <- function(player) {
   
   positions <- unlist(player$positions)
+  
+  round_info <- named_list_to_tibble(player$stats$prices, col_names = c("round", "round_price")) |> 
+    full_join(
+      named_list_to_tibble(player$stats$scores, col_names = c("round", "round_score")),
+      by = "round"
+    ) |> 
+    full_join(
+      named_list_to_tibble(player$stats$ranks, col_names = c("round", "round_rank")),
+      by = "round"
+    )
   
   bind_cols(
     player[c("id", "first_name", "last_name", "slug", "dob", "squad_id", "cost", "status", "is_bye", "locked")],
@@ -48,32 +67,37 @@ tranform_player_df <- function(player) {
         {if(is_midfielder) "Mid" else NULL}
       ) |> 
         paste(collapse = "/")
+    ) |> 
+    mutate(
+      round_info = list(round_info)
     )
-}
-
-named_list_to_tibble <- function(x, col_names = c("name", "value")) {
-  tibble(
-    name = names(x),
-    value = unlist(x)
-  ) |> 
-    `colnames<-`(col_names)
 }
 
 tranform_player2_df <- function(player2, player_id) {
   
-  future_projections <- named_list_to_tibble(player2$proj_scores, col_names = c("round", "scores")) |> 
+  future_projections <- named_list_to_tibble(player2$proj_scores, col_names = c("round", "proj_score")) |> 
     full_join(
-      named_list_to_tibble(player2$proj_prices, col_names = c("round", "price")),
+      named_list_to_tibble(player2$proj_prices, col_names = c("round", "proj_price")),
       by = "round"
     ) |> 
     full_join(
-      named_list_to_tibble(player2$break_evens, col_names = c("round", "break_evens")),
+      named_list_to_tibble(player2$break_evens, col_names = c("round", "proj_break_even")),
       by = "round"
     ) |> 
     full_join(
-      named_list_to_tibble(player2$be_pct, col_names = c("round", "be_pct")),
+      named_list_to_tibble(player2$be_pct, col_names = c("round", "proj_be_pct")),
       by = "round"
     )
+  
+  transfers <- player2$transfers |> 
+    bind_rows() |> 
+    `colnames<-`(c("trades_in", "trades_out")) |> 
+    mutate(
+      round = names(player2$transfers)
+    )
+  
+  projections_trades_by_round <- future_projections |> 
+    full_join(transfers, by = "round")
   
   draft_selections_names <- names(player2$draft_selections_info)
   draft_selections_info <- player2$draft_selections_info |>
@@ -86,7 +110,7 @@ tranform_player2_df <- function(player2, player_id) {
     draft_selections_info
   ) |> 
     mutate(
-      future_projections = list(future_projections)
+      projections_trades_by_round = list(projections_trades_by_round)
     )
   
 }
@@ -105,10 +129,24 @@ squads_df <- squads |>
 
 af_player_data <- players_df |> 
   left_join(players2_df, by = "id") |> 
-  left_join(squads_df, by = c("squad_id" = "team_id")) |> 
-  # remove this as it is not flat
-  select(-future_projections)
+  left_join(squads_df, by = c("squad_id" = "team_id"))
 
+
+af_player_data_by_round <- af_player_data |> 
+  select(-proj_score) |> 
+  mutate(
+    data_by_round = map2(projections_trades_by_round, round_info, full_join, by = "round")
+  ) |> 
+  select(-projections_trades_by_round, -round_info) |> 
+  unnest(data_by_round) |> 
+  relocate(round, .before = "id") |> 
+  mutate(round = as.integer(round)) |> 
+  arrange(id, round)
 
 af_player_data |> 
+  # remove this as it is not flat
+  select(-projections_trades_by_round, -round_info) |> 
   write_parquet("afl_fantasy/data/processed/2024/af_player_data.parquet")
+
+af_player_data_by_round |> 
+  write_parquet("afl_fantasy/data/processed/2024/af_player_data_by_round.parquet")
