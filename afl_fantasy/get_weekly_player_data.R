@@ -51,15 +51,29 @@ tranform_player_df <- function(player) {
     )
 }
 
-tranform_player2_df <- function(player2, player_id) {
-  future_projections <- tibble(
-    round = names(player2$proj_scores),
-    scores = player2$proj_scores,
-    prices = player2$proj_prices,
-    break_evens = player2$break_evens,
-    be_pct = player2$be_pct
+named_list_to_tibble <- function(x, col_names = c("name", "value")) {
+  tibble(
+    name = names(x),
+    value = unlist(x)
   ) |> 
-    mutate(across(everything(), unlist))
+    `colnames<-`(col_names)
+}
+
+tranform_player2_df <- function(player2, player_id) {
+  
+  future_projections <- named_list_to_tibble(player2$proj_scores, col_names = c("round", "scores")) |> 
+    full_join(
+      named_list_to_tibble(player2$proj_prices, col_names = c("round", "price")),
+      by = "round"
+    ) |> 
+    full_join(
+      named_list_to_tibble(player2$break_evens, col_names = c("round", "break_evens")),
+      by = "round"
+    ) |> 
+    full_join(
+      named_list_to_tibble(player2$be_pct, col_names = c("round", "be_pct")),
+      by = "round"
+    )
   
   draft_selections_names <- names(player2$draft_selections_info)
   draft_selections_info <- player2$draft_selections_info |>
