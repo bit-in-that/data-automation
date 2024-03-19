@@ -134,3 +134,7 @@ system.time({
     resps_successes() |>
     resps_data(handle_data)
 })
+
+resp_tbl |> 
+  left_join(overall_ranks, by = "user_id") |>
+  write_parquet("afl_fantasy/data/raw/2024/afl_fantasy_lineups.parquet")
