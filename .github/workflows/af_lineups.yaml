@@ -1,0 +1,48 @@
+name: AFL Fantasy Lineups
+
+on: 
+  workflow_dispatch:
+  # schedule:
+  # - cron: "0 0 * * 1" # midnight ADST every tuesday
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+
+    - name: get libcurl
+      run: |
+        sudo apt-get install libcurl4-openssl-dev
+
+    - name: Install dependencies
+      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite"))
+      shell: Rscript {0}
+
+
+    - name: Run Script
+      run: |
+        source("afl_fantasy/get_afl_fantasy_lineups.R", echo = TRUE)
+      shell: Rscript {0}
+      
+    - name: Commit
+      run: |
+        git config --global user.name 'bit in that'
+        git config --global user.email 'timothy.gummer@gmail.com'
+        git add .
+        git pull
+        git commit -m 'ACTION: get AFL Fantasy Lineups' || echo "No changes to commit"
+        git pull
+        git push 
