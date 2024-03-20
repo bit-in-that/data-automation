@@ -37,6 +37,7 @@ base_req <- request("https://fantasy.afl.com.au/afl_classic/api/teams_classic/sn
   req_headers(!!!headers)
 
 req_list <- afl_fantasy_team_ids |> 
+  head(3) |> 
   pull(user_id) |> 
   map(~base_req |> req_url_query(user_id = .x))
 
