@@ -28,7 +28,7 @@ jobs:
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite"))
+      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "data.table"))
       shell: Rscript {0}
 
 
