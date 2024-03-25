@@ -1,7 +1,7 @@
 # library(bit.data)
 library(dplyr)
 library(purrr)
-library(fst)
+# library(fst)
 library(arrow)
 
 content_creators <- data.table::fread("afl_fantasy/data/raw/content_creators.csv") |> as_tibble()

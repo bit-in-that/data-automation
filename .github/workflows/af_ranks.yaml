@@ -35,6 +35,7 @@ jobs:
     - name: Run Script
       run: |
         source("afl_fantasy/get_afl_fantasy_ranks.R", echo = TRUE)
+        source("afl_fantasy/content_creator_ranks.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
