@@ -122,7 +122,6 @@ base_req <- request("https://fantasy.afl.com.au/afl_classic/api/teams_classic/sh
 
 req_list <- overall_ranks |>
   pull(team_id) |> 
-  head(3) |> 
   map(~base_req |> req_url_query(id = .x))
 
 system.time({
