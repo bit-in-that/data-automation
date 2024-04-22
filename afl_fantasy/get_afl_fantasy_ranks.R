@@ -19,7 +19,8 @@ handle_data <- function(resp) {
       tibble(
         team_id = id,
         points = points,
-        rank = rank
+        rank = rank,
+        round = rev(names(scoreflow))[1]
       )
     })
     
