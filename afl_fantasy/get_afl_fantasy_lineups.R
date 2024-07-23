@@ -126,7 +126,7 @@ req_list <- overall_ranks |>
 
 system.time({
   resp_list <- req_list |> 
-    req_perform_parallel(on_error = "return")
+    req_perform_parallel(on_error = "continue")
 })
 
 system.time({

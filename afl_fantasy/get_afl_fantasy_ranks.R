@@ -43,7 +43,7 @@ req_list <- afl_fantasy_team_ids |>
 
 system.time({
   resp_list <- req_list |> 
-    req_perform_parallel(on_error = "return")
+    req_perform_parallel(on_error = "continue")
   
 })
 
@@ -52,6 +52,8 @@ system.time({
     resps_successes() |>
     resps_data(handle_data)
 })
+
+print(paste("Proportion successful:", nrow(resp_tbl) / length(req_list)))
 
 resp_tbl |> 
   left_join(
