@@ -1,0 +1,52 @@
+name: aflw fantasy player selection snapshots
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: "10 * * * *" # every hour to figure out when it changes
+    # - cron: "10 17 * * *" # 4:10AM AEST every day
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+
+
+    - name: get libcurl
+      run: |
+        sudo apt-get install libcurl4-openssl-dev
+
+    - name: Install dependencies
+      run: install.packages(c("dplyr", "purrr", "httr", "arrow", "tidyr", "jsonlite"))
+      shell: Rscript {0}
+
+
+    - name: Run Script
+      run: |
+        source("aflw_fantasy/player_selection_snapshots.R", echo = TRUE)
+# source("afl_fantasy/player_selection_processing.R", echo = TRUE)
+# source("afl_fantasy/get_weekly_player_data.R", echo = TRUE)
+      shell: Rscript {0}
+      
+    - name: Commit
+      run: |
+        git config --global user.name 'bit in that'
+        git config --global user.email 'timothy.gummer@gmail.com'
+        git add .
+        git pull
+        git commit -m 'ACTION: get aflw player selection snapshot' || echo "No changes to commit"
+        git pull
+        git push 

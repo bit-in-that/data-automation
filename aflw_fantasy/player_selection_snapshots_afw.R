@@ -5,7 +5,7 @@ library(arrow)
 
 source("aflw_fantasy/modules/get_player_data_afw.R")
 
-# player_selections_initial <- read_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
+player_selections_initial <- read_parquet("aflw_fantasy/data/raw/2024/player_selections.parquet")
 players <- get_player_data()
 
 player_selections <- players |> 
@@ -24,8 +24,7 @@ player_selections <- players |>
     snapshot_time = Sys.time()
   )
   
-# player_selections_initial |> 
-  # bind_rows(player_selections) |> 
-  player_selections |> 
+player_selections_initial |>
+  bind_rows(player_selections) |>
   write_parquet("aflw_fantasy/data/raw/2024/player_selections.parquet")
 
