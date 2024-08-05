@@ -27,5 +27,5 @@ player_selections <- players |>
 # player_selections_initial |> 
   # bind_rows(player_selections) |> 
   player_selections |> 
-  write_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
+  write_parquet("aflw_fantasy/data/raw/2024/player_selections.parquet")
 
