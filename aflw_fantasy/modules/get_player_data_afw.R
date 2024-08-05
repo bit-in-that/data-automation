@@ -36,7 +36,6 @@ get_player_data <- function(by_round = FALSE) {
           )
         }
       }),
-      scores = map_if(scores, ~!is.null(.x), ~tibble(round = as.integer(names(.x)), score = as.integer(.x))),
       full_name = paste(firstName, lastName)
     ) |> 
     mutate(
@@ -45,6 +44,20 @@ get_player_data <- function(by_round = FALSE) {
     relocate(
       selections_snapshot_time, .after = "selections"
     )
+  
+  if("scores" %in% names(player_data_flat)) {
+    # At the start of the season, the scores column might not exist, need to be careful of this.
+    player_data_flat <- player_data_flat |>  
+      mutate(
+        scores = map_if(scores, ~!is.null(.x), ~tibble(round = as.integer(names(.x)), score = as.integer(.x)))
+        )
+    
+  } else {
+    player_data_flat <- player_data_flat |> 
+      mutate(
+        scores = list(NULL)
+      )
+  }
   
   if(by_round) {
     player_data_flat |> 
