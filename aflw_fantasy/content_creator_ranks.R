@@ -14,10 +14,18 @@ rankings_data <- read_parquet("aflw_fantasy/data/processed/ranking_data.parquet"
     roundRank 
   )
 
+rankings_data_2023 <- read_parquet("aflw_fantasy/data/processed/2023/ranking_data.parquet") |> 
+  select(
+    user_id = userId,
+    overall_rank_2023 = overallRank,
+  )
+
 
 content_creators_ranks_aflw <- content_creators |> 
   filter(include) |>
   left_join(content_organisations, "organisation") |> 
-  left_join(rankings_data, c("user_id"))
+  left_join(rankings_data, c("user_id")) |> 
+  left_join(rankings_data_2023, c("user_id"))
+  
 
 write_parquet(content_creators_ranks_aflw, "aflw_fantasy/data/processed/content_creators_ranks_aflw.parquet")

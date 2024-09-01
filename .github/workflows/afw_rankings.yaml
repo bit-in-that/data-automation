@@ -35,11 +35,11 @@ jobs:
     - name: Run Script
       run: |
         source("aflw_fantasy/modules/get_rank_data_afw.R", echo = TRUE)
-        source("aflw_fantasy/modules/get_content_creator_ranks.R", echo = TRUE)
         source("aflw_fantasy/modules/get_afw_session_id.R")
         session_id <- get_afw_session_id()
         save_ranking_data(session_id)
         save_content_creator_ranks()
+        source("aflw_fantasy/modules/get_content_creator_ranks.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
