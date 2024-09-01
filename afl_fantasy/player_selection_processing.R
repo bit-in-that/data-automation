@@ -12,7 +12,7 @@ bound_values <- function(x, max_value) {
   ) |> 
     round(digits = 2)
 }
-autofill_date <- as.Date("2024-03-16")
+
 
 player_selections_initial <- read_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
 autofill_picks <- read_parquet("afl_fantasy/data/processed/2024/autofill_picks.parquet")
