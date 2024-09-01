@@ -36,7 +36,9 @@ jobs:
       run: |
         source("aflw_fantasy/modules/get_rank_data_afw.R", echo = TRUE)
         source("aflw_fantasy/modules/get_content_creator_ranks.R", echo = TRUE)
-        save_ranking_data("533aac36e90c0ae896cb3a89_1696920884")
+        source("aflw_fantasy/modules/get_afw_session_id.R")
+        session_id <- get_afw_session_id()
+        save_ranking_data(session_id)
         save_content_creator_ranks()
       shell: Rscript {0}
       
