@@ -2,8 +2,8 @@ name: AFLW Fantasy Rankings
 
 on: 
   workflow_dispatch:
-  # schedule:
-  #   - cron: "0 2 * * 1" # 12PM every monday
+  schedule:
+    - cron: "0 2 * * 1" # 12PM every monday
   # push:
   #   branches:
   #     - main
