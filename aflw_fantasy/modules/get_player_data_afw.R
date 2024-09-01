@@ -36,7 +36,11 @@ get_player_data <- function(by_round = FALSE) {
     # At the start of the season, the scores column might not exist, need to be careful of this.
     player_data_flat <- player_data_flat |>  
       mutate(
-        scores = map_if(scores, ~!is.null(.x), ~tibble(round = as.integer(names(.x)), score = as.integer(.x)))
+        scores = map_if(scores, ~!is.null(.x), ~{
+          .x <- head(.x, -1)
+          tibble(round = as.integer(names(.x)), score = as.integer(unlist(.x))) 
+          }
+        )
         )
     
   } else {
@@ -76,14 +80,25 @@ get_player_data <- function(by_round = FALSE) {
     player_data_flat |> 
       mutate(
         round_stats = map2(prices, scores, ~{
-          if(is.null(.y)) {
+          if(is.null(.y) & is.null(.x)) {
+            mutate(
+              round = NA_integer_,
+              score = NA_integer_,
+              price = NA_integer_
+            )
+          } else if(is.null(.y)) {
             .x |> 
               mutate(
                 score = NA_integer_
               )
+          } else if(is.null(.x)) {
+            .y |> 
+              mutate(
+                price = NA_integer_
+              )
           } else {
             left_join(.x, .y, "round")
-          }
+          } 
         })
       ) |> 
       select(-prices, -scores) |>

@@ -3,7 +3,7 @@ name: AFL Fantasy Ranks
 on: 
   workflow_dispatch:
    schedule:
-     - cron: "0 15 * * 0" # 1AM AEST every monday
+     # - cron: "0 15 * * 0" # 1AM AEST every monday
   # push:
   #   branches:
   #     - main
