@@ -1,7 +1,7 @@
 name: aflw fantasy player selection snapshots
 
 on: 
-  # workflow_dispatch:
+  workflow_dispatch:
   # schedule:
   #   - cron: "0 14 * * *" # 10PM AWST every day
   #   - cron: "0 0 * * *" # 10AM AWST every day
