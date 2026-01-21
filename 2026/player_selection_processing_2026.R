@@ -38,7 +38,7 @@ player_selections_long <- player_selections_initial |>
   ungroup() |> 
   mutate(
     text_snapshot = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Ownership (Adjusted): ", round(ownership_adjusted, 2), "%<br />Raw Ownership (Official): ", round(ownership, 2), "%<br />Team completion: ",round(100*completion_percentage, 1), "%"),
-    text_daily_change = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Daily Movement In Adjusted Ownership: ", round(ownership_adjusted_diff, 2), "<br />Daily Movement In Raw Ownership  (Official):", ownership_diff, "%<br />Team completion: ",round(100*completion_percentage_diff, 1), "%")
+    text_daily_change = paste0("Snapshot Date: ", format(snapshot_date, format = "%Y-%m-%d"), "<br />Change In Adjusted Ownership: ", round(ownership_adjusted_diff, 2), "%<br />Change In Raw Ownership (Official):", ownership_diff, "%<br />Change Team completion: ",round(100*completion_percentage_diff, 1), "%")
   )
 
 
