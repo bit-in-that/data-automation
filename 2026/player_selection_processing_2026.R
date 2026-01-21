@@ -42,3 +42,7 @@ player_selections_long <- player_selections_initial |>
 
 
 write_parquet(player_selections_long, "2026/output/player_selections_long.parquet")
+
+if(FALSE) { # not performed by action
+  player_selections_long <- read_parquet("2026/output/player_selections_long.parquet")
+}
