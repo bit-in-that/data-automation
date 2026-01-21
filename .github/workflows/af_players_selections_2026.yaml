@@ -1,4 +1,4 @@
-name: afl fantasy player selection snapshots
+name: 2026 afl fantasy player selection snapshots
 
 on: 
   workflow_dispatch:
