@@ -13,8 +13,6 @@ players <- request(players_url) |>
   req_perform() |> 
   resp_body_json()
 
-
-
 player_selections <- players |> 
   map(~{
     tibble(
@@ -24,7 +22,7 @@ player_selections <- players |>
       dob = .x$dob,
       price = .x$price,
       position = paste(unlist(.x$position), collapse = "/"),
-      seasons = paste(unlist(.x$seasons), collapse = ","),
+      # seasons = paste(unlist(.x$seasons), collapse = ","),
       # selections = .x$stats$selections,
       # Not sure what this "2" is, need to look into it (are they doing ownership over time?)
       ownership = .x$ownership[["2"]],
@@ -46,4 +44,12 @@ player_selections_minimal <- player_selections |>
 player_selections_initial |> 
   bind_rows(player_selections_minimal) |> 
   write_parquet("2026/output/player_selections.parquet")
+
+if(FALSE) { # As to not be run by action:
+  player_selections |> 
+    mutate(
+      ownership_adjusted = round(ownership / sum(ownership) * 3000, 2)
+    ) |> 
+    clipr::write_clip()
+}
 
