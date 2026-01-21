@@ -3,6 +3,7 @@ name: 2026 afl fantasy player selection snapshots
 on: 
   schedule:
     - cron: "45 * * * *" # Every hour
+  workflow_dispatch:
   # push:
   #   branches:
   #     - main
