@@ -1,0 +1,50 @@
+name: afl fantasy player selection snapshots
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *" # Every hour
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+
+
+    - name: get libcurl
+      run: |
+        sudo apt-get install libcurl4-openssl-dev
+
+    - name: Install dependencies
+      run: install.packages(c("dplyr", "purrr", "httr2", "arrow", "tidyr"))
+      shell: Rscript {0}
+
+
+    - name: Run Script
+      run: |
+        source("2026/player_selection_snapshots_2026.R", echo = TRUE)
+        source("2026/player_selection_processing_2026.R", echo = TRUE)
+      shell: Rscript {0}
+      
+    - name: Commit
+      run: |
+        git config --global user.name 'bit in that'
+        git config --global user.email 'timothy.gummer@gmail.com'
+        git add .
+        git pull
+        git commit -m 'ACTION: get player selection snapshot' || echo "No changes to commit"
+        git pull
+        git push 

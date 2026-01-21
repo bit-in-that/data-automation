@@ -5,7 +5,7 @@ library(arrow)
 library(httr2)
 
 
-# player_selections_initial <- read_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
+player_selections_initial <- read_parquet("2026/output/player_selections.parquet")
 
 players_url <- "https://fantasy.afl.com.au/json/fantasy/players.json"
 
