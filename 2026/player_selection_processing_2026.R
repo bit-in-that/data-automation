@@ -1,22 +1,23 @@
 library(dplyr)
 library(tidyr)
 library(arrow)
-
-# source("_examples/modules/afl_fantasy_apis.R")
-
-bound_values <- function(x, max_value) {
-  case_when(
-    is.nan(x) ~ 0,
-    x>max_value ~ max_value,
-    TRUE ~ x
-  ) |> 
-    round(digits = 2)
-}
-
+library(digest)
 
 player_selections_initial <- read_parquet("2026/output/player_selections.parquet")
 
+unique_snapshot_times <- player_selections_initial |> 
+  group_by(snapshot_time) |> 
+  arrange(id) |> 
+  summarise(
+    hash = digest(ownership, algo = "xxhash64"),
+    .groups = "drop"
+  ) |> 
+  arrange(snapshot_time) |> 
+  distinct(hash, .keep_all = TRUE) |> 
+  pull(snapshot_time)
+
 player_selections_long <- player_selections_initial |> 
+  filter(snapshot_time %in% unique_snapshot_times) |> 
   mutate(
     snapshot_date = as.Date(snapshot_time, tz = "Australia/Sydney") - 1
   ) |> 
