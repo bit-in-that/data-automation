@@ -34,9 +34,9 @@ player_selections_long <- player_selections_initial |>
   ) |>
   group_by(id) |> 
   mutate(
-    completion_percentage_diff = c(head(completion_percentage), diff(completion_percentage)),
-    ownership_diff = c(head(ownership), diff(ownership)),
-    ownership_adjusted_diff = c(head(ownership_adjusted), diff(ownership_adjusted))
+    completion_percentage_diff = c(head(completion_percentage, n=1), diff(completion_percentage)),
+    ownership_diff = c(head(ownership, n=1), diff(ownership)),
+    ownership_adjusted_diff = c(head(ownership_adjusted, n=1), diff(ownership_adjusted))
   ) |> 
   ungroup() |> 
   mutate(
