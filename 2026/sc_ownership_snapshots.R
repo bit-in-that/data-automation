@@ -4,7 +4,7 @@ library(arrow)
 library(httr2)
 
 
-# player_selections_initial <- read_parquet("2026/output/sc_player_selections.parquet")
+player_selections_initial <- read_parquet("2026/output/sc_player_selections.parquet")
 
 players_url <- "https://www.supercoach.com.au/2026/api/afl/classic/v1/players-cf?year=2026&round=1&embed=player_stats"
 
@@ -36,7 +36,7 @@ player_selections <- players |>
 player_selections_minimal <- player_selections |> 
   select(id, owned, own_raw, snapshot_time)
 
-#player_selections_initial |> 
+player_selections_initial |> 
   bind_rows(player_selections_minimal) |> 
   write_parquet("2026/output/sc_player_selections.parquet")
 
