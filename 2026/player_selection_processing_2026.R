@@ -6,6 +6,9 @@ library(digest)
 player_selections_initial <- read_parquet("2026/output/player_selections.parquet")
 
 unique_snapshot_times <- player_selections_initial |> 
+  mutate(
+    snapshot_date = as.Date(snapshot_time, tz = "Australia/Sydney") - 1
+  ) |> 
   group_by(snapshot_time) |> 
   arrange(id) |> 
   summarise(
@@ -13,7 +16,7 @@ unique_snapshot_times <- player_selections_initial |>
     .groups = "drop"
   ) |> 
   arrange(snapshot_time) |> 
-  distinct(hash, .keep_all = TRUE) |> 
+  distinct(hash, snapshot_date, .keep_all = TRUE) |> 
   pull(snapshot_time)
 
 player_selections_long <- player_selections_initial |> 
