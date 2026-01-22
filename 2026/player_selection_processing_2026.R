@@ -17,6 +17,7 @@ unique_snapshot_times <- player_selections_initial |>
     snapshot_date = as.Date(snapshot_time, tz = "Australia/Sydney") - 1
   ) |> 
   distinct(hash, snapshot_date, .keep_all = TRUE) |> 
+  distinct(snapshot_date, .keep_all = TRUE) |>
   pull(snapshot_time)
 
 player_selections_long <- player_selections_initial |> 
