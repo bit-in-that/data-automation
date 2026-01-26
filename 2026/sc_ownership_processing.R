@@ -3,7 +3,7 @@ library(tidyr)
 library(arrow)
 library(digest)
 
-player_selections_initial <- read_parquet("2026/output/player_selections.parquet")
+player_selections_initial <- read_parquet("2026/output/sc_player_selections.parquet")
 
 player_selections_initial <- player_selections_initial |> 
   mutate(
