@@ -47,9 +47,11 @@ player_selections <- players |>
     map(~{
       tibble(
         id = .x$id,
-        picked_bench = .x$pickedBench[["2"]],
         picked_field = .x$pickedField[["2"]]
-      )
+      ) |> 
+        mutate(
+          picked_bench = 100 - picked_field
+        )
     }) |> 
     bind_rows()
   )
