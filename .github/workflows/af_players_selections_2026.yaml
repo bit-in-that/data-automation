@@ -42,7 +42,7 @@ jobs:
     - name: Commit
       run: |
         git config --global user.name 'bit in that'
-        git config --global user.email 'timothy.gummer@gmail.com'
+        git config --global user.email 'bit.in.that.afl@gmail.com'
         git add .
         git pull
         git commit -m 'ACTION: get player selection snapshot (2026)' || echo "No changes to commit"
