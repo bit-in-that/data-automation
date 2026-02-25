@@ -35,6 +35,7 @@ jobs:
 
     - name: Run Script
       run: |
+        source("2026/player_data_2026.R", echo = TRUE)
         source("2026/player_selection_snapshots_2026.R", echo = TRUE)
         source("2026/player_selection_processing_2026.R", echo = TRUE)
       shell: Rscript {0}
