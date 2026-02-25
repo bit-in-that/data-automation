@@ -32,6 +32,7 @@ jobs:
 
       - name: Run Script
         run: |
+          source("2026/sc_player_data.R", echo = TRUE)
           source("2026/sc_ownership_snapshots.R", echo = TRUE)
           source("2026/sc_ownership_processing.R", echo = TRUE)
         shell: Rscript {0}
