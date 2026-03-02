@@ -45,9 +45,13 @@ player_selections <- players |>
     by = "id",
   players_coach |> 
     map(~{
+      picked_field <- .x$pickedField[["2"]]
+      if(is.null(picked_field)) {
+        picked_field <- NA_integer_
+      }
       tibble(
         id = .x$id,
-        picked_field = .x$pickedField[["2"]]
+        picked_field = picked_field
       ) |> 
         mutate(
           picked_bench = 100 - picked_field
