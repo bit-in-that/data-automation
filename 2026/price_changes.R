@@ -304,7 +304,7 @@ r1_projected_price_changes <- players_df |>
       target_change <- change * 1000
       x |> 
         mutate(
-          " r1_proj_breakeven_{change_label}" := vectorised_breakeven(price = price_r0, price_target = price + target_change, previous_scores = r0_score, magic_number = magic_number_r1)
+          "r1_proj_breakeven_{change_label}" := vectorised_breakeven(price = price_r0, price_target = price + target_change, previous_scores = r0_score, magic_number = magic_number_r1)
         )
     }
   )
