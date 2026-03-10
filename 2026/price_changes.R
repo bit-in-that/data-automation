@@ -278,7 +278,7 @@ r1_projected_price_changes <- players_df |>
     by = "id"
   ) |> 
   mutate(
-    played_r0 = is.na(r0_score),
+    played_r0 = !is.na(r0_score),
     price_r0 = coalesce(price_hidden, price),
     price_change_r0 = coalesce(price_change_hidden, 0)
   ) |> 
