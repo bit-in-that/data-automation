@@ -57,11 +57,11 @@ calculate_price_change <- function(scores, price, magic_number) {
     priced_at_new_raw,
     priced_at_change_raw,
     price_change_raw,
-    price_new_raw
+    price_new_raw,
+    price_change_rounded,
+    price_new_rounded
     )
 }
-
-
 
 calculate_breakeven <- function(scores, price, magic_number, price_target = price) {
   scores_trunc <- scores |> 
@@ -84,8 +84,14 @@ calculate_breakeven <- function(scores, price, magic_number, price_target = pric
   
   price_difference_term <- (priced_at_target - priced_at) / PRICING_CHANGE_COMMON_FACTOR
   
-  weighted_average_previous <- weighted.mean(scores_trunc, weights_breakeven) 
-  weighted_sum_previous <- weighted.mean(scores_trunc, weights_breakeven)  * sum(weights_breakeven)
+  if(length(scores_trunc) == 0) {
+    weighted_average_previous <- 0
+    
+  } else {
+    weighted_average_previous <- weighted.mean(scores_trunc, weights_breakeven) 
+    
+  }
+  weighted_sum_previous <- weighted_average_previous  * sum(weights_breakeven)
   
   breakeven_raw <- (price_difference_term + total_weights * priced_at - weighted_sum_previous) / first_weight
   
@@ -97,6 +103,14 @@ calculate_breakeven <- function(scores, price, magic_number, price_target = pric
     breakeven_raw = breakeven_raw,
     breakeven = breakeven,
   )
+}
+
+calculate_price_change_single <- function(..., output_column = "price_change_rounded") {
+  calculate_price_change(...)[[output_column]]
+}
+
+calculate_breakeven_single <- function(..., output_column = "breakeven") {
+  calculate_breakeven(...)[[output_column]]
 }
 
 round_preserve_sum <- function(x, digits = 0, target = NA_real_) {
@@ -242,12 +256,61 @@ afl_fantasy_r0_breakevens <- r0_player_prices |>
 afl_fantasy_r0_breakevens |> 
   data.table::fwrite("2026/output/afl_fantasy_r0_breakevens.csv")
 
+vectorised_price_change <- function(next_score, previous_scores, price, magic_number) {
+  map2(previous_scores, next_score, c) |> 
+    map2_int(price, .f = calculate_price_change_single, magic_number = magic_number)
+  
+}
+
+vectorised_breakeven <- function(previous_scores, price_target, price, magic_number) {
+  pmap_int(list(previous_scores, price, price_target), .f = calculate_breakeven_single, magic_number = magic_number)
+  # scores, price, magic_number, price_target = price
+}
 
 
+r1_projected_price_changes <- players_df |> 
+  left_join(
+    r0_player_prices |> 
+      mutate(
+        r1_proj_change_r0 = vectorised_price_change(next_score = r0_score, previous_scores = r0_score, price = price_new, magic_number = magic_number_r1) + price_change
+      ) |> 
+      select(id, price_hidden = price_new, price_change_hidden = price_change, breakeven_hidden, r1_proj_change_r0),
+    by = "id"
+  ) |> 
+  mutate(
+    played_r0 = is.na(r0_score),
+    price_r0 = coalesce(price_hidden, price),
+    price_change_r0 = coalesce(price_change_hidden, 0)
+  ) |> 
+  reduce(
+    .init = _,
+    .x = 10 * (0:15),
+    \(x, score){
+      x |> 
+        mutate(
+          "r1_proj_change_{score}" := vectorised_price_change(next_score = score, previous_scores = r0_score, price = price_r0, magic_number = magic_number_r1) + price_change_r0
+        )
+    }
+  ) |> 
+  mutate(
+    priced_at_preseason = round(price / MAGIC_NUMBER_PRESEASON, 0),
+    r1_proj_change_priced_at = vectorised_price_change(next_score = priced_at_preseason, previous_scores = r0_score, price = price_r0, magic_number = magic_number_r1) + price_change_r0,
+  ) |> 
+  reduce(
+    .init = _,
+    .x = 25 * (-6:6),
+    \(x, change){
+      change_label <- if_else(change < 0, paste0("neg", abs(change)), as.character(change))
+      target_change <- change * 1000
+      x |> 
+        mutate(
+          " r1_proj_breakeven_{change_label}" := vectorised_breakeven(price = price_r0, price_target = price + target_change, previous_scores = r0_score, magic_number = magic_number_r1)
+        )
+    }
+  )
 
-price_news |> 
-  pull(price_change_rounded) |> 
-  sum()
+r1_projected_price_changes |> 
+  write_parquet("2026/output/r1_projected_price_changes.parquest")
 
 # TODO: some projections on what happens if a player scores x
 # Jagger BE Check:
@@ -271,8 +334,10 @@ calculate_price_change(scores = c(118), price = 51*MAGIC_NUMBER_PRESEASON, magic
 calculate_price_change(scores = c(118, 47), price = 590510, magic_number = magic_number_r1)
 621886 - 51*MAGIC_NUMBER_PRESEASON
 
-calculate_price_change(scores = c(109, 60), price = 605000, magic_number = magic_number_r1)
-639-559
+calculate_price_change(scores = c(109, 60), price = 605000, magic_number = magic_number_r1)$price_change_raw +605000- 559000
+calculate_price_change(scores = c(61, 55), price = 262000, magic_number = magic_number_r1)$price_change_raw +262000- 230000
+
+
 
 calculate_breakeven(scores = 82, price = 280000, magic_number = magic_number_r1)
 calculate_breakeven(scores = c(82, 82), price = 280000, magic_number = magic_number_r1)
@@ -301,3 +366,7 @@ calculate_breakeven(scores = 20, price = 1000000, magic_number = magic_number_r1
 # also thought of having charts for each player plotting price against score with horizontal lines for current and hidden price (intersection represents break-even) - could be price change charts instead or price change in hover metadata
 
 # will need to build jsons to make interactive which might be annoying
+
+
+
+# indicate opening round players
