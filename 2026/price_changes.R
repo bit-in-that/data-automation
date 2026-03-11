@@ -143,6 +143,7 @@ player_selections_initial <- read_parquet("2026/output/player_selections.parquet
 
 players_url <- "https://fantasy.afl.com.au/json/fantasy/players.json"
 players_coach_url <- "https://fantasy.afl.com.au/json/fantasy/coach/players.json"
+squad_url <- "https://fantasy.afl.com.au/data/afl/squads.json"
 
 players <- request(players_url) |> 
   req_perform() |> 
@@ -152,6 +153,9 @@ players_coach <- request(players_coach_url) |>
   req_perform() |> 
   resp_body_json()
 
+squad <- request(squad_url) |> 
+  req_perform() |> 
+  resp_body_json()
 
 af_official_projections <- players_coach |> 
   map(~{
@@ -176,6 +180,7 @@ players_df <- players |>
       id = .x$id,
       first_name = .x$firstName,
       last_name = .x$lastName,
+      squad_id = .x$squadId,
       price = .x$price,
       r0_score = r0_score,
       position = paste(unlist(.x$position), collapse = "/"),
@@ -186,6 +191,15 @@ players_df <- players |>
   mutate(
     player_name = paste(first_name, last_name)
   )
+
+squad_tibble <- squad |> 
+  map(~{
+    tibble(
+      id = .x$id,
+      team = .x$short_name
+    )
+  }) |> 
+  list_rbind()
 
 
 magic_number_working <- players_df |> 
@@ -214,8 +228,6 @@ magic_number_r0 <- magic_number_working |>
 
 magic_number_r1 <- magic_number_r0
 
-
-
 r0_player_prices <- players_df |> 
   filter(!is.na(r0_score)) |> 
   mutate(
@@ -236,14 +248,35 @@ r0_player_prices <- players_df |>
   ) |> 
   unnest(breakeven_data_hidden)
 
+r1_player_prices <- players_df |> 
+  filter(is.na(r0_score)) |>
+  left_join(squad_tibble, by = c("squad_id" = "id")) |>
+  mutate(starting_price = price) |> 
+  mutate(hidden_price = price) |> 
+  mutate(breakeven = price/magic_number_r1) |> 
+  mutate(breakeven_to_hit_hidden_price = price/magic_number_r1) |> 
+  select(
+    id,
+    player_name,
+    team,
+    position,
+    r0_score,
+    starting_price,
+    hidden_price,
+    breakeven,
+    breakeven_to_hit_hidden_price
+  )
+
 # check that the prices changes sum to 0:
 stopifnot(sum(r0_player_prices$price_change) == 0)
 stopifnot(min(r0_player_prices$price_new) >= BASEMENT_PRICE)
 
 afl_fantasy_r0_breakevens <- r0_player_prices |> 
+  left_join(squad_tibble, by = c("squad_id" = "id")) |>
   select(
     id,
     player_name,
+    team,
     position,
     r0_score,
     starting_price = price,
@@ -253,8 +286,15 @@ afl_fantasy_r0_breakevens <- r0_player_prices |>
   ) |> 
   arrange(desc(r0_score))
 
+afl_fantasy_breakevens <- afl_fantasy_r0_breakevens |> 
+  bind_rows(r1_player_prices) |> 
+  arrange(desc(r0_score))
+
 afl_fantasy_r0_breakevens |> 
   data.table::fwrite("2026/output/afl_fantasy_r0_breakevens.csv")
+
+afl_fantasy_breakevens |> 
+  data.table::fwrite("2026/output/afl_fantasy_breakevens.csv")
 
 vectorised_price_change <- function(next_score, previous_scores, price, magic_number) {
   map2(previous_scores, next_score, c) |> 
@@ -316,6 +356,7 @@ r1_projected_price_changes |>
 # Jagger BE Check:
 calculate_price_change(scores = c(82, -75), price = 280000, magic_number = magic_number_r1)
 calculate_price_change(scores = c(82, 82), price = 280000, magic_number = magic_number_r1)
+calculate_price_change(scores = c(92, 90), price = 1167000, magic_number = magic_number_r1)
 
 calculate_price_change(scores = c(82, 82, 82), price = 363213, magic_number = magic_number_r1)
 calculate_price_change(scores = c(82, 82, 82, 82), price = 457520, magic_number = magic_number_r1)
