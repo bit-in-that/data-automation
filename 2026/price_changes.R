@@ -227,6 +227,7 @@ magic_number_r0 <- magic_number_working |>
 #    - probably a more statistically rigorous way to do this kind of analysis (facotr analysis perhaps?)
 
 magic_number_r1 <- magic_number_r0
+magic_number_r2 <- magic_number_r1
 
 r0_player_prices <- players_df |> 
   filter(!is.na(r0_score)) |> 
@@ -344,7 +345,25 @@ r1_projected_price_changes <- players_df |>
       target_change <- change * 1000
       x |> 
         mutate(
-          "r1_proj_breakeven_{change_label}" := vectorised_breakeven(price = price_r0, price_target = price + target_change, previous_scores = r0_score, magic_number = magic_number_r1)
+          "r1_proj_breakeven_{change_label}" := vectorised_breakeven(price = price_r0, price_target = price + target_change, previous_scores = r0_score, magic_number = magic_number_r2)
+        )
+    }
+  ) |> 
+  reduce(
+    .init = _,
+    .x = 10 * (0:15),
+    \(x, score){
+      price_change_column_name <- paste0("r1_proj_change_", score)
+      scores <- x |> 
+        mutate(
+          scores = map(r0_score, ~c(.x, score))
+          ) |> 
+        pull(scores)
+      
+      
+      x |> 
+        mutate(
+          "r2_proj_breakeven_{score}" := vectorised_breakeven(price = price + .data[[price_change_column_name]], price_target = price + .data[[price_change_column_name]], previous_scores = scores, magic_number = magic_number_r1)
         )
     }
   )
