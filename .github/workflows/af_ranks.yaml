@@ -1,9 +1,9 @@
-name: AFL Fantasy Team IDs
+name: AFL Fantasy Ranks
 
 on: 
   workflow_dispatch:
-  # schedule:
-  # - cron: "0 16 * * *" # 3AM ADST every day
+   # schedule:
+     # - cron: "0 15 * * 0" # 1AM AEST every monday
   # push:
   #   branches:
   #     - main
@@ -28,13 +28,14 @@ jobs:
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "curl"))
+      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "data.table"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
-        source("afl_fantasy/get_afl_fantasy_team_ids.R", echo = TRUE)
+        source("afl_fantasy/get_afl_fantasy_ranks.R", echo = TRUE)
+        source("afl_fantasy/content_creator_ranks.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
@@ -43,6 +44,6 @@ jobs:
         git config --global user.email 'timothy.gummer@gmail.com'
         git add .
         git pull
-        git commit -m 'ACTION: get AFL Fantasy Team IDs' || echo "No changes to commit"
+        git commit -m 'ACTION: get AFL Fantasy Ranks' || echo "No changes to commit"
         git pull
         git push 

@@ -1,9 +1,11 @@
-name: AFL Fantasy Team IDs
+name: aflw fantasy player selection snapshots
 
 on: 
   workflow_dispatch:
   # schedule:
-  # - cron: "0 16 * * *" # 3AM ADST every day
+  #   - cron: "0 14 * * *" # 10PM AWST every day
+  #   - cron: "0 0 * * *" # 10AM AWST every day
+    # - cron: "10 * * * *" # every hour to figure out when it changes
   # push:
   #   branches:
   #     - main
@@ -23,18 +25,21 @@ jobs:
       with:
         use-public-rspm: true
 
+
     - name: get libcurl
       run: |
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "curl"))
+      run: install.packages(c("dplyr", "purrr", "httr", "arrow", "tidyr", "jsonlite"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
-        source("afl_fantasy/get_afl_fantasy_team_ids.R", echo = TRUE)
+        source("aflw_fantasy/player_selection_snapshots_afw.R", echo = TRUE)
+# source("afl_fantasy/player_selection_processing.R", echo = TRUE)
+# source("afl_fantasy/get_weekly_player_data.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
@@ -43,6 +48,6 @@ jobs:
         git config --global user.email 'timothy.gummer@gmail.com'
         git add .
         git pull
-        git commit -m 'ACTION: get AFL Fantasy Team IDs' || echo "No changes to commit"
+        git commit -m 'ACTION: get aflw player selection snapshot' || echo "No changes to commit"
         git pull
         git push 

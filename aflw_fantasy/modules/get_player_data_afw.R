@@ -23,20 +23,6 @@ get_player_data <- function(by_round = FALSE) {
     unnest(squad, names_sep = "_") |> 
     unnest(stats) |>
     mutate(
-      prices = map_if(prices, ~!is.null(.x), ~{
-        out <- tibble(round = as.integer(names(.x)), round_price = as.integer(.x))
-        if(1L %in% out$round) {
-          out
-        } else {
-          all_rounds <- out |> pull(round)
-          missing_rounds <- setdiff(1:max(all_rounds), all_rounds)
-          first_round_price <- out |> pull(round_price) |> tail(n = 1)
-          bind_rows(
-            out, tibble(round = missing_rounds, round_price = first_round_price)
-          )
-        }
-      }),
-      scores = map_if(scores, ~!is.null(.x), ~tibble(round = as.integer(names(.x)), score = as.integer(.x))),
       full_name = paste(firstName, lastName)
     ) |> 
     mutate(
@@ -46,18 +32,73 @@ get_player_data <- function(by_round = FALSE) {
       selections_snapshot_time, .after = "selections"
     )
   
+  if("scores" %in% names(player_data_flat)) {
+    # At the start of the season, the scores column might not exist, need to be careful of this.
+    player_data_flat <- player_data_flat |>  
+      mutate(
+        scores = map_if(scores, ~!is.null(.x), ~{
+          .x <- head(.x, -1)
+          tibble(round = as.integer(names(.x)), score = as.integer(unlist(.x))) 
+          }
+        )
+        )
+    
+  } else {
+    player_data_flat <- player_data_flat |> 
+      mutate(
+        scores = list(NULL)
+      )
+  }
+  
+  if("prices" %in% names(player_data_flat)) {
+    # At the start of the season, the scores column might not exist, need to be careful of this.
+    player_data_flat <- player_data_flat |>  
+      mutate(
+        prices = map_if(prices, ~!is.null(.x), ~{
+          out <- tibble(round = as.integer(names(.x)), round_price = as.integer(.x))
+          if(1L %in% out$round) {
+            out
+          } else {
+            all_rounds <- out |> pull(round)
+            missing_rounds <- setdiff(1:max(all_rounds), all_rounds)
+            first_round_price <- out |> pull(round_price) |> tail(n = 1)
+            bind_rows(
+              out, tibble(round = missing_rounds, round_price = first_round_price)
+            )
+          }
+        })
+        )
+    
+  } else {
+    player_data_flat <- player_data_flat |> 
+      mutate(
+        prices = list(NULL)
+      )
+  }
+  
   if(by_round) {
     player_data_flat |> 
       mutate(
         round_stats = map2(prices, scores, ~{
-          if(is.null(.y)) {
+          if(is.null(.y) & is.null(.x)) {
+            mutate(
+              round = NA_integer_,
+              score = NA_integer_,
+              price = NA_integer_
+            )
+          } else if(is.null(.y)) {
             .x |> 
               mutate(
                 score = NA_integer_
               )
+          } else if(is.null(.x)) {
+            .y |> 
+              mutate(
+                price = NA_integer_
+              )
           } else {
             left_join(.x, .y, "round")
-          }
+          } 
         })
       ) |> 
       select(-prices, -scores) |>

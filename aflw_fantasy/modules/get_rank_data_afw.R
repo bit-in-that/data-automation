@@ -52,7 +52,11 @@ save_ranking_data <- function(session_id) {
     round(digits = 0) |> 
     as.integer()
   
-  ranking_data_previous <- get_ranking_data(session_id, roundId = current_round - 1)
+  if(current_round <2L) {
+    ranking_data_previous <- get_ranking_data(session_id, roundId = current_round - 1)
+  } else {
+    ranking_data
+  }
   
   write_parquet(ranking_data, "aflw_fantasy/data/processed/ranking_data.parquet")
   write_parquet(ranking_data_previous, "aflw_fantasy/data/processed/ranking_data_previous.parquet")

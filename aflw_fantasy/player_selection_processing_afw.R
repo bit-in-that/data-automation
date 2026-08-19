@@ -2,8 +2,25 @@ library(dplyr)
 library(tidyr)
 library(arrow)
 
-# source("_examples/modules/afl_fantasy_apis.R")
+player_selections_initial <- read_parquet("aflw_fantasy/data/raw/2024/player_selections.parquet")
 
+# Snapshots happen at the following AWST times: 1AM, 4AM, 7AM, 10AM, 1PM, 4PM, 7PM, 10PM
+player_selections_initial |> 
+  mutate(
+    snapshot_date = as.Date(snapshot_time, tz = "Australia/Perth")
+  ) |> 
+  group_by(snapshot_date) |> 
+  filter(snapshot_time == max(snapshot_time)) |> 
+  View()
+
+player_selections_long <- player_selections_initial |> 
+  group_by(snapshot_time) |> 
+  filter(selections == max(selections)) |> 
+  ungroup() |> 
+  distinct(.keep_all = TRUE)
+
+
+# ------------------------------------------------------------------------------
 bound_values <- function(x, max_value) {
   case_when(
     is.nan(x) ~ 0,
@@ -13,22 +30,18 @@ bound_values <- function(x, max_value) {
     round(digits = 2)
 }
 
-
-player_selections_initial <- read_parquet("afl_fantasy/data/raw/2024/player_selections.parquet")
-autofill_picks <- read_parquet("afl_fantasy/data/processed/2024/autofill_picks.parquet")
-
 player_selections_long <- player_selections_initial |> 
   group_by(snapshot_time) |> 
   filter(selections == max(selections)) |> 
   ungroup() |> 
   distinct(.keep_all = TRUE) |> 
-  mutate(
-    fantasy_coaches = round(selections / owned_by * 100, 0)
-  ) |> 
-  # filter out the early small sample size day because its pretty meaningless
-  filter(fantasy_coaches > 1000) |> 
-  select(fantasy_coaches, snapshot_time) |> 
-  distinct(fantasy_coaches, .keep_all = TRUE) |> 
+  # mutate(
+  #   fantasy_coaches = round(selections / owned_by * 100, 0)
+  # ) |> 
+  # # filter out the early small sample size day because its pretty meaningless
+  # filter(fantasy_coaches > 1000) |> 
+  select(snapshot_time) |> 
+  # distinct(fantasy_coaches, .keep_all = TRUE) |> 
   inner_join(player_selections_initial, y = _, by = "snapshot_time") |> 
   mutate(
     snapshot_date = as.Date(snapshot_time, tz = "Australia/Sydney") - 1

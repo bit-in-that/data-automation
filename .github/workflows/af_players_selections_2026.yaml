@@ -1,9 +1,9 @@
-name: AFL Fantasy Team IDs
+name: 2026 afl fantasy player selection snapshots
 
 on: 
+  schedule:
+    - cron: "45 * * * *" # Every hour
   workflow_dispatch:
-  # schedule:
-  # - cron: "0 16 * * *" # 3AM ADST every day
   # push:
   #   branches:
   #     - main
@@ -23,26 +23,29 @@ jobs:
       with:
         use-public-rspm: true
 
+
     - name: get libcurl
       run: |
         sudo apt-get install libcurl4-openssl-dev
 
     - name: Install dependencies
-      run: install.packages(c("httr2", "purrr", "dplyr", "arrow", "jsonlite", "curl"))
+      run: install.packages(c("dplyr", "purrr", "httr2", "arrow", "tidyr", "jsonlite", "digest"))
       shell: Rscript {0}
 
 
     - name: Run Script
       run: |
-        source("afl_fantasy/get_afl_fantasy_team_ids.R", echo = TRUE)
+        source("2026/player_data_2026.R", echo = TRUE)
+        source("2026/player_selection_snapshots_2026.R", echo = TRUE)
+        source("2026/player_selection_processing_2026.R", echo = TRUE)
       shell: Rscript {0}
       
     - name: Commit
       run: |
         git config --global user.name 'bit in that'
-        git config --global user.email 'timothy.gummer@gmail.com'
+        git config --global user.email 'bit.in.that.afl@gmail.com'
         git add .
         git pull
-        git commit -m 'ACTION: get AFL Fantasy Team IDs' || echo "No changes to commit"
+        git commit -m 'ACTION: get player selection snapshot (2026)' || echo "No changes to commit"
         git pull
         git push 
